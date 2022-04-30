@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <form method="POST" action="/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
+            <table>
+                <tr>
+                    <td><input type="file" name="csv-file" id="csv-file" accept=".csv" required></td>
+                </tr>
+                <tr>
+                    <td><button type="submit">Upload</button></td>
+                </tr>
+            </table>
+        </form>
+        <br>
+        <div th:if="${!fileName.empty}">
+            <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OneMapApp/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
+        </div>
+        <div th:unless="${message.empty}"><code th:text="${message}"></code></div>
+    </body>
+</html>

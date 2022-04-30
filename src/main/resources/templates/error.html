@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <code th:if="${message} == 'ioe'">A IOException has occurred, please try uploading the .csv file again.</code>
+    <code th:if="${message} == 'wtbae'">A WriteToByteArrayException has occurred, please contact the administrator with the error message.</code>
+    <code th:if="${message} == 'invalidfiletype'">Please only upload a .csv filetype</code>
+    <code th:if="${message} == 'addressnotincolheader'">Please ensure that you have a column header labeled "address" (without quotations)</code>
+    <code th:if="${message} == 'douploadwentwrong'">Something went wrong while uploading to DO, please contact the administrator with the error message.</code>
+</body>
+</html>
