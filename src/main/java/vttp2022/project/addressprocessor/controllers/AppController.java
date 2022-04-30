@@ -2,6 +2,7 @@ package vttp2022.project.addressprocessor.controllers;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
-import vttp2022.project.addressprocessor.models.Address;
 import vttp2022.project.addressprocessor.models.AddressResult;
 import vttp2022.project.addressprocessor.services.AppService;
 
@@ -50,15 +50,15 @@ public class AppController {
         } else {
 
             try {
-                
-                List<Address> searchValList = appSvc.parseSearchValue(file);
-                if (searchValList.isEmpty()) {
+
+                Set<String> searchValSet = appSvc.parseSearchValue(file);
+                if (searchValSet.isEmpty()) {
                     mvc.addObject("message", "addressnotincolheader");
                     mvc.setViewName("error");
                     return mvc;    
                 }
 
-                List<AddressResult> queryResultList = appSvc.queryOneMapAPI(searchValList);
+                List<AddressResult> queryResultList = appSvc.queryOneMapAPI(searchValSet);
 
                 String filename = appSvc.writeToByteArray(queryResultList);
                 if (filename.isBlank()) {
