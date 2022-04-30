@@ -22,6 +22,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.opencsv.CSVWriter;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -60,8 +61,9 @@ public class AppService {
             return Collections.emptySet();
         }
 
+        //use a set to avoid duplicate value search
         Set<String> addressSet = new HashSet<>();
-        //iterate rows after col header to add search terms into Address obj
+        //iterate rows after col header to add search terms into addressSet
         while ((rowStr = buffReader.readLine()) != null) {
             //.csv separates each column using a , so we split the values by , and find the
             //column index containing the search value
@@ -117,7 +119,7 @@ public class AppService {
 
             } else { //more than 1 page
 
-                //starts at page 1 instead of 0, and <= because we want the last page
+                //starts at page 1 instead of 0 and <= because we want the last page
                 for (int i = 1; i <= totalNumPages; i++) {
 
                     url = UriComponentsBuilder
@@ -211,20 +213,8 @@ public class AppService {
     //parse the entire col header into a String separated by a comma
     //then into a String array to find the index of "address"
     private static int getColumnIndex(String rowStr, String searchStr) {
-
-        System.out.println("row string>" + rowStr);
-
-        int index = -1;
+        System.out.println("rowStr >>> " + rowStr);
         String[] colHeaderStrArray = rowStr.split(",");
-        
-        for (int i = 0; i < colHeaderStrArray.length; i++) {
-            System.out.println(colHeaderStrArray[i].toLowerCase());
-            if (colHeaderStrArray[i].toLowerCase().equals(searchStr)) {
-                System.out.println(colHeaderStrArray[i] + " found at index " + i);
-                index = i;
-            }
-        }
-
-        return index;
+        return ArrayUtils.indexOf(colHeaderStrArray, searchStr);
     }
 }
