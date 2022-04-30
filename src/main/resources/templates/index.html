@@ -19,7 +19,7 @@
         </form>
         <br>
         <div th:if="${!fileName.empty}">
-            <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OneMapApp/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
+            <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
         </div>
         <div th:unless="${message.empty}"><code th:text="${message}"></code></div>
     </body>

@@ -9,7 +9,6 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -35,6 +34,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
+
 import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
 
@@ -47,32 +47,30 @@ public class AppService {
     private static final String ONE_MAP_URL = "https://developers.onemap.sg/commonapi/search";
 
     public Set<String> parseSearchValue(MultipartFile file) throws IOException {
-        
+
         InputStreamReader isr = new InputStreamReader(file.getInputStream());
         BufferedReader buffReader = new BufferedReader(isr);
         
         //readLine below goes to the first row in the file (column header)
-        String addStr = buffReader.readLine().toLowerCase();
-        System.out.println("header row String >> " + addStr);
-        int addColIndex = getColumnIndex(addStr, "address");
+        String rowStr = buffReader.readLine().toLowerCase();
+        int addColIndex = getColumnIndex(rowStr, "address");
+        System.out.println("Address array index is at " + addColIndex);
         if (addColIndex < 0) {
             System.out.println("\"address\" could not be found in column header");
             return Collections.emptySet();
         }
-        System.out.println("Address array index is at " + addColIndex + " (" + (addColIndex+1) + ")");
 
         Set<String> addressSet = new HashSet<>();
         //iterate rows after col header to add search terms into Address obj
-        while ((addStr = buffReader.readLine()) != null) {
+        while ((rowStr = buffReader.readLine()) != null) {
             //.csv separates each column using a , so we split the values by , and find the
             //column index containing the search value
-            String[] strArray = addStr.trim().split(",");
+            String[] strArray = rowStr.trim().split(",");
             //why we replace spaces with + is because OneMapAPI does not accept spaces
             String addSearchVal = strArray[addColIndex].replace(" ", "+");
             
             addressSet.add(addSearchVal);
         }
-
         return addressSet;
     }
     
@@ -106,7 +104,6 @@ public class AppService {
             int totalNumPages = object.getInt("totalNumPages");
             if (totalNumPages == 1) {
 
-                System.out.println("result only has " + totalNumPages + " page");
                 JsonArray array = object.getJsonArray("results");
 
                 array.stream().forEach(v -> {
@@ -120,11 +117,8 @@ public class AppService {
 
             } else { //more than 1 page
 
-                System.out.println("result has " + totalNumPages + " pages");
                 //starts at page 1 instead of 0, and <= because we want the last page
                 for (int i = 1; i <= totalNumPages; i++) {
-
-                    System.out.println("Page " + i);
 
                     url = UriComponentsBuilder
                         .fromUriString(ONE_MAP_URL)
@@ -216,8 +210,21 @@ public class AppService {
 
     //parse the entire col header into a String separated by a comma
     //then into a String array to find the index of "address"
-    private static int getColumnIndex(String header, String searchStr){
-        String[] colHeaderStrArray = header.trim().split(",");
-        return Arrays.asList(colHeaderStrArray).indexOf(searchStr);
+    private static int getColumnIndex(String rowStr, String searchStr) {
+
+        System.out.println("row string>" + rowStr);
+
+        int index = -1;
+        String[] colHeaderStrArray = rowStr.split(",");
+        
+        for (int i = 0; i < colHeaderStrArray.length; i++) {
+            System.out.println(colHeaderStrArray[i].toLowerCase());
+            if (colHeaderStrArray[i].toLowerCase().equals(searchStr)) {
+                System.out.println(colHeaderStrArray[i] + " found at index " + i);
+                index = i;
+            }
+        }
+
+        return index;
     }
 }
