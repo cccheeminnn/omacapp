@@ -8,7 +8,7 @@
     </head>
     <body>
         <form method="POST" action="/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
-            <table>
+            <table border="1">
                 <tr>
                     <td><input type="file" name="csv-file" id="csv-file" accept=".csv" required></td>
                 </tr>
@@ -18,9 +18,24 @@
             </table>
         </form>
         <br>
+        <div th:unless="${message.empty}"><code th:text="${message}"></code></div>
         <div th:if="${!fileName.empty}">
             <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
         </div>
-        <div th:unless="${message.empty}"><code th:text="${message}"></code></div>
+        <form method="POST" action="/quicksearch">
+            <table>
+                <tr>
+                    <td>Quick search:</td>
+                    <td><input type="text" placeholder="type here" name="searchValue"></td>
+                    <td><button type="submit">Search</button></td>
+                </tr>
+            </table>
+        </form>
+        <table border="1" th:if="${!resultList.empty}">
+            <tr th:each="a : ${resultList}">
+                <td th:text="${aStat.count}"></td>
+                <td th:text="${a.fullAddress}"></td>
+            </tr>
+        </table>
     </body>
 </html>
