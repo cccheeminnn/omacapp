@@ -7,6 +7,8 @@
         <title>Document</title>
     </head>
     <body>
+        <h1>Welcome to OMAC, the One Map API Caller!</h1>
+        <h2>Please upload a non UTF-8 .csv file :)</h2>
         <form method="POST" action="/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
             <table border="1">
                 <tr>
@@ -17,13 +19,14 @@
                 </tr>
             </table>
         </form>
+        <p>Please visit the <a th:href="@{haventdoyetlah}">HELP</a> page if you require further assistance.</p>
         <br>
-        <div th:unless="${message.empty}"><code th:text="${message}"></code></div>
-        <div th:if="${!fileName.empty}">
+        <p th:unless="${message.empty}"><code th:text="${message}"></code></p>
+        <p th:if="${!fileName.empty}">
             <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
-        </div>
+        </p>
         <form method="POST" action="/quicksearch">
-            <table>
+            <table border="1">
                 <tr>
                     <td>Quick search:</td>
                     <td><input type="text" placeholder="type here" name="searchValue"></td>
@@ -31,11 +34,37 @@
                 </tr>
             </table>
         </form>
-        <table border="1" th:if="${!resultList.empty}">
-            <tr th:each="a : ${resultList}">
-                <td th:text="${aStat.count}"></td>
-                <td th:text="${a.fullAddress}"></td>
-            </tr>
-        </table>
+        <br>
+        <form method="POST" action="/quicksearch" th:if="${!resultList.empty}">
+            <p>
+                Search results for '<span th:text="${searchValue}"></span>', <span th:text="${noOfResults}"></span> found.
+                <input type="hidden" name="searchValue" th:value="${searchValue}">
+            </p>
+            <table border="1">
+                <tr>
+                    <td>S No.</td>
+                    <td>BLK_NO</td>
+                    <td>ROADNAME</td>
+                    <td>BUILDING</td>
+                    <td>FULL_ADDRESS</td>
+                    <td>POSTAL_CODE</td>
+                </tr>
+                <tr th:each="a : ${resultList}">
+                    <td th:text="${aStat.count} + 10 * (${page} - 1)"></td>
+                    <td th:text="${a.blkNo}"></td>
+                    <td th:text="${a.roadName}"></td>
+                    <td th:text="${a.building}"></td>
+                    <td th:text="${a.fullAddress}"></td>
+                    <td th:text="${a.postalCode}"></td>
+                </tr>
+                <tr>
+                    <td th:if="${page} > 1">
+                        <button name="page" type="submit" th:value="${page} - 1">Prev</button>
+                    </td>
+                    <td colspan="4"></td>
+                    <td th:if="${page} < (${noOfResults} / 10)"><button name="page" type="submit" th:value="${page} + 1">Next</button></td>
+                </tr>
+            </table>
+        </form>
     </body>
 </html>

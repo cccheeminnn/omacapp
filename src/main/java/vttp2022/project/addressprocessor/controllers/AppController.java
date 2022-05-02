@@ -36,8 +36,11 @@ public class AppController {
         ModelAndView mvc = new ModelAndView();
         mvc.addObject("message", "");
         mvc.addObject("fileName", "");
+
         mvc.addObject("resultList", Collections.emptyList());
-        mvc.addObject("resultListSize", "");
+        mvc.addObject("searchValue", "");
+        mvc.addObject("noOfResults", "");
+        mvc.addObject("page", 1);
         mvc.setViewName("index");
         return mvc;
     }
@@ -78,7 +81,11 @@ public class AppController {
                 
                 mvc.addObject("message", "Here is your search results!");
                 mvc.addObject("fileName", filename);
+
                 mvc.addObject("resultList", Collections.emptyList());
+                mvc.addObject("searchValue", "");
+                mvc.addObject("noOfResults", "");
+                mvc.addObject("page", 1);
                 mvc.setViewName("index");
                 return mvc;        
 
@@ -94,21 +101,54 @@ public class AppController {
         }
     }
 
+    //after user typed in search term and hit search
     @PostMapping(path="/quicksearch")
     public ModelAndView postQuickSearch(@RequestBody MultiValueMap<String, String> formData) {
 
         ModelAndView mvc = new ModelAndView();
-        String searchValue = formData.getFirst("searchValue").replace(" ", "+");
-        Set<String> searchValueSet = new HashSet<>();
-        searchValueSet.add(searchValue);
-        List<AddressResult> addResultList = appSvc.queryOneMapAPI(searchValueSet);
-        System.out.println(addResultList.size());
 
-        mvc.setViewName("index");
+        String searchTerm = formData.getFirst("searchValue");
+        String searchTermForSQL = "%" + searchTerm + "%";
+        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, 0);
+
+        Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL);
+
         mvc.addObject("message", "");
         mvc.addObject("fileName", "");
-        mvc.addObject("resultList", addResultList);
-        mvc.addObject("resultListSize", addResultList.size());
+        
+        mvc.addObject("resultList", addResultsList);
+        mvc.addObject("searchValue", searchTerm);
+        mvc.addObject("noOfResults", noOfResults);
+        mvc.addObject("page", 1);
+        mvc.setViewName("index");
+
+        return mvc;
+    }
+
+    //after user hit search, this will reflect next or prev page
+    @PostMapping(path="/quicksearch", params="page")
+    public ModelAndView getPage(@RequestBody MultiValueMap<String, String> formData, 
+        @RequestParam(name="page") String page) {
+        
+        ModelAndView mvc = new ModelAndView();
+
+        String searchTerm = formData.getFirst("searchValue");
+        String searchTermForSQL = "%" + searchTerm + "%";
+        
+        Integer pageInt = Integer.parseInt(page);
+        Integer offset = 0 + 10 * (pageInt - 1);
+        
+        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset);
+        Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL);
+
+        mvc.addObject("message", "");
+        mvc.addObject("fileName", "");
+        
+        mvc.addObject("resultList", addResultsList);
+        mvc.addObject("searchValue", searchTerm);
+        mvc.addObject("noOfResults", noOfResults);
+        mvc.addObject("page", pageInt);
+        mvc.setViewName("index");
 
         return mvc;
     }

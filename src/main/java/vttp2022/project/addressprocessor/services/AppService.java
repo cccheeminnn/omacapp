@@ -7,10 +7,12 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,12 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 
 import vttp2022.project.addressprocessor.models.AddressResult;
+import vttp2022.project.addressprocessor.repositories.OMACRepository;
 
 @Service
 public class AppService {
+
+    @Autowired private OMACRepository omacRepo;
     
     private static final String ONE_MAP_URL = "https://developers.onemap.sg/commonapi/search";
 
@@ -144,5 +149,19 @@ public class AppService {
         System.out.println("rowStr >>> " + rowStr);
         String[] colHeaderStrArray = rowStr.split(",");
         return ArrayUtils.indexOf(colHeaderStrArray, searchStr);
+    }
+
+    //for index page search fields result
+    public List<AddressResult> getAddressesFromSearchValue (String searchTerm, Integer limit, Integer offset) {
+
+        List<AddressResult> addResultsList = new LinkedList<>();
+
+        addResultsList = omacRepo.getFullAddresses(searchTerm, limit, offset);
+
+        return addResultsList;
+    }
+
+    public Integer getNumberOfResults(String searchTerm) {
+        return omacRepo.getNumberOfResults(searchTerm);
     }
 }
