@@ -30,6 +30,7 @@
                 <tr>
                     <td>Quick search:</td>
                     <td><input type="text" placeholder="type here" name="searchValue"></td>
+                    <input type="hidden" name="page" th:value="1">
                     <td><button type="submit">Search</button></td>
                 </tr>
             </table>
@@ -61,7 +62,8 @@
                     <td th:if="${page} > 1">
                         <button name="page" type="submit" th:value="${page} - 1">Prev</button>
                     </td>
-                    <td colspan="4"></td>
+                    <td th:if="${page} == 1" colspan="5"></td>
+                    <td th:if="${page} != 1" colspan="4"></td>
                     <td th:if="${page} < (${noOfResults} / 10)"><button name="page" type="submit" th:value="${page} + 1">Next</button></td>
                 </tr>
             </table>

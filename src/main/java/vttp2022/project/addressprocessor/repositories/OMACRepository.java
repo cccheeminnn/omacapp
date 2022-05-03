@@ -33,7 +33,6 @@ public class OMACRepository {
 
     public List<AddressResult> getFullAddresses(String searchTerm, Integer limit, Integer offset) {
 
-        System.out.println(searchTerm);
         SqlRowSet rs = template.queryForRowSet(SQL_FIND_ADDRESSES, searchTerm, limit, offset);
         List<AddressResult> addResultsList = new LinkedList<>();
         while (rs.next()) {

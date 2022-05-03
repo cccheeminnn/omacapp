@@ -2,7 +2,6 @@ package vttp2022.project.addressprocessor.controllers;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -107,6 +107,8 @@ public class AppController {
 
         ModelAndView mvc = new ModelAndView();
 
+        Integer pageInt = Integer.parseInt(formData.getFirst("page"));
+
         String searchTerm = formData.getFirst("searchValue");
         String searchTermForSQL = "%" + searchTerm + "%";
         List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, 0);
@@ -119,7 +121,7 @@ public class AppController {
         mvc.addObject("resultList", addResultsList);
         mvc.addObject("searchValue", searchTerm);
         mvc.addObject("noOfResults", noOfResults);
-        mvc.addObject("page", 1);
+        mvc.addObject("page", pageInt);
         mvc.setViewName("index");
 
         return mvc;
@@ -127,17 +129,16 @@ public class AppController {
 
     //after user hit search, this will reflect next or prev page
     @PostMapping(path="/quicksearch", params="page")
-    public ModelAndView getPage(@RequestBody MultiValueMap<String, String> formData, 
-        @RequestParam(name="page") String page) {
-        
-        ModelAndView mvc = new ModelAndView();
+    public ModelAndView getPage(@RequestBody MultiValueMap<String, String> formData) {
 
+        ModelAndView mvc = new ModelAndView();
+            
         String searchTerm = formData.getFirst("searchValue");
         String searchTermForSQL = "%" + searchTerm + "%";
         
-        Integer pageInt = Integer.parseInt(page);
+        Integer pageInt = Integer.parseInt(formData.getFirst("page"));
         Integer offset = 0 + 10 * (pageInt - 1);
-        
+            
         List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset);
         Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL);
 
