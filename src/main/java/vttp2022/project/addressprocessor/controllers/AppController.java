@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,12 +32,14 @@ public class AppController {
     //Get homepage
     @GetMapping(path={"", "/upload"})
     public ModelAndView getIndex() {       
+        System.out.println("Get index.html");
         ModelAndView mvc = new ModelAndView();
         mvc.addObject("message", "");
         mvc.addObject("fileName", "");
 
         mvc.addObject("resultList", Collections.emptyList());
         mvc.addObject("searchValue", "");
+        mvc.addObject("searchBy", "");
         mvc.addObject("noOfResults", "");
         mvc.addObject("page", 1);
         mvc.setViewName("index");
@@ -84,6 +85,7 @@ public class AppController {
 
                 mvc.addObject("resultList", Collections.emptyList());
                 mvc.addObject("searchValue", "");
+                mvc.addObject("searchBy", "");
                 mvc.addObject("noOfResults", "");
                 mvc.addObject("page", 1);
                 mvc.setViewName("index");
@@ -102,16 +104,22 @@ public class AppController {
     }
 
     //after user typed in search term and hit search
-    @PostMapping(path="/quicksearch")
-    public ModelAndView postQuickSearch(@RequestBody MultiValueMap<String, String> formData) {
+    @PostMapping(path="/quicksearch", params = "searchdb")
+    public ModelAndView postQuickSearch(
+        @RequestBody MultiValueMap<String, String> form) {
 
+        System.out.println("post search button pressed");
         ModelAndView mvc = new ModelAndView();
 
-        Integer pageInt = Integer.parseInt(formData.getFirst("page"));
+        String searchBy = form.getFirst("searchBy");
+        System.out.println(">>>>>>> " + searchBy);
+        
+        Integer pageInt = Integer.parseInt(form.getFirst("page"));
 
-        String searchTerm = formData.getFirst("searchValue");
+        String searchTerm = form.getFirst("searchValue");
         String searchTermForSQL = "%" + searchTerm + "%";
-        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, 0);
+
+        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, 0, searchBy);
 
         Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL);
 
@@ -120,6 +128,7 @@ public class AppController {
         
         mvc.addObject("resultList", addResultsList);
         mvc.addObject("searchValue", searchTerm);
+        mvc.addObject("searchBy", searchBy);
         mvc.addObject("noOfResults", noOfResults);
         mvc.addObject("page", pageInt);
         mvc.setViewName("index");
@@ -129,17 +138,19 @@ public class AppController {
 
     //after user hit search, this will reflect next or prev page
     @PostMapping(path="/quicksearch", params="page")
-    public ModelAndView getPage(@RequestBody MultiValueMap<String, String> formData) {
-
+    public ModelAndView postPage(
+        @RequestBody MultiValueMap<String, String> formData) {
+        System.out.println("post page button pressed");
         ModelAndView mvc = new ModelAndView();
             
-        String searchTerm = formData.getFirst("searchValue");
-        String searchTermForSQL = "%" + searchTerm + "%";
-        
         Integer pageInt = Integer.parseInt(formData.getFirst("page"));
         Integer offset = 0 + 10 * (pageInt - 1);
+        
+        String searchBy = formData.getFirst("searchBy");
+        String searchTerm = formData.getFirst("searchValue");
+        String searchTermForSQL = "%" + searchTerm + "%";
             
-        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset);
+        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset, searchBy);
         Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL);
 
         mvc.addObject("message", "");
@@ -147,6 +158,7 @@ public class AppController {
         
         mvc.addObject("resultList", addResultsList);
         mvc.addObject("searchValue", searchTerm);
+        mvc.addObject("searchBy", searchBy);
         mvc.addObject("noOfResults", noOfResults);
         mvc.addObject("page", pageInt);
         mvc.setViewName("index");

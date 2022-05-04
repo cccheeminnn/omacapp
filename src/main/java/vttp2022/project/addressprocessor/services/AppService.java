@@ -152,11 +152,12 @@ public class AppService {
     }
 
     //for index page search fields result
-    public List<AddressResult> getAddressesFromSearchValue (String searchTerm, Integer limit, Integer offset) {
+    public List<AddressResult> getAddressesFromSearchValue (
+        String searchTerm, Integer limit, Integer offset, String searchBy) {
 
         List<AddressResult> addResultsList = new LinkedList<>();
 
-        addResultsList = omacRepo.getFullAddresses(searchTerm, limit, offset);
+        addResultsList = omacRepo.getFullAddresses(searchTerm, limit, offset, searchBy);
 
         return addResultsList;
     }

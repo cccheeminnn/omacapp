@@ -31,9 +31,16 @@ public class OMACRepository {
 
     }
 
-    public List<AddressResult> getFullAddresses(String searchTerm, Integer limit, Integer offset) {
+    public List<AddressResult> getFullAddresses(String searchTerm, Integer limit, Integer offset, String searchBy) {
 
-        SqlRowSet rs = template.queryForRowSet(SQL_FIND_ADDRESSES, searchTerm, limit, offset);
+        SqlRowSet rs = null;
+        switch (searchBy) {
+            case "address":
+                rs = template.queryForRowSet(SQL_FIND_ADDRESSES_BY_FULL_ADDRESS, searchTerm, limit, offset);
+            case "postalcode":
+                rs = template.queryForRowSet(SQL_FIND_ADDRESSES_BY_POSTAL_CODE, searchTerm, limit, offset);
+        }
+
         List<AddressResult> addResultsList = new LinkedList<>();
         while (rs.next()) {
             AddressResult myAddResult = AddressResult.populate(rs);

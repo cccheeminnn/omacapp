@@ -30,25 +30,31 @@
                 <tr>
                     <td>Quick search:</td>
                     <td><input type="text" placeholder="type here" name="searchValue"></td>
+                    <td>
+                        <input type="radio" name="searchBy" value="address" id="address">
+                        <label for="address">Address</label>
+                        <input type="radio" name="searchBy" value="postalcode" id="postalcode">
+                        <label for="postalcode">Postal Code</label>
+                    </td>
                     <input type="hidden" name="page" th:value="1">
-                    <td><button type="submit">Search</button></td>
+                    <td><button type="submit" name="searchdb" value="searchDb">Search</button></td>
                 </tr>
             </table>
         </form>
-        <br>
-        <form method="POST" action="/quicksearch" th:if="${!resultList.empty}">
-            <p>
-                Search results for '<span th:text="${searchValue}"></span>', <span th:text="${noOfResults}"></span> found.
-                <input type="hidden" name="searchValue" th:value="${searchValue}">
-            </p>
-            <table border="1">
+        <form method="POST" action="/quicksearch">
+            <table border="1" th:if="${!resultList.empty}">
                 <tr>
-                    <td>S No.</td>
+                    <td>S_NO.</td>
                     <td>BLK_NO</td>
                     <td>ROADNAME</td>
                     <td>BUILDING</td>
                     <td>FULL_ADDRESS</td>
                     <td>POSTAL_CODE</td>
+                </tr>
+                <tr>
+                    Search results for '<span th:text="${searchValue}"></span>', <span th:text="${noOfResults}"></span> found.
+                    <input type="hidden" name="searchValue" th:value="${searchValue}">
+                    <input type="hidden" name="searchBy" th:value="${searchBy}">
                 </tr>
                 <tr th:each="a : ${resultList}">
                     <td th:text="${aStat.count} + 10 * (${page} - 1)"></td>
@@ -60,11 +66,11 @@
                 </tr>
                 <tr>
                     <td th:if="${page} > 1">
-                        <button name="page" type="submit" th:value="${page} - 1">Prev</button>
+                        <button type="submit" name="page" th:value="${page} - 1">Prev</button>
                     </td>
                     <td th:if="${page} == 1" colspan="5"></td>
                     <td th:if="${page} != 1" colspan="4"></td>
-                    <td th:if="${page} < (${noOfResults} / 10)"><button name="page" type="submit" th:value="${page} + 1">Next</button></td>
+                    <td th:if="${page} < (${noOfResults} / 10)"><button type="submit" name="page" th:value="${page} + 1">Next</button></td>
                 </tr>
             </table>
         </form>

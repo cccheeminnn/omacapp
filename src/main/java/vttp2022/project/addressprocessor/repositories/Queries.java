@@ -9,7 +9,9 @@ public interface Queries {
                 from addresses where full_address like ?
         """;
 
-    public static final String SQL_FIND_ADDRESSES = "select * from addresses where full_address like ? limit ? offset ?";
+    public static final String SQL_FIND_ADDRESSES_BY_FULL_ADDRESS = "select * from addresses where full_address like ? limit ? offset ?";
+
+    public static final String SQL_FIND_ADDRESSES_BY_POSTAL_CODE = "select * from addresses where postal_code like ? limit ? offset ?";
     //end
 
     //mainly for use in UpdateAddressDatabase.java
