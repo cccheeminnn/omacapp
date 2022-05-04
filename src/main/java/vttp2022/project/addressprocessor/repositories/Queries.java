@@ -3,10 +3,16 @@ package vttp2022.project.addressprocessor.repositories;
 public interface Queries {
 
     //mainly for use in the app
-    public static final String SQL_NUMBER_OF_RESULTS = 
+    public static final String SQL_NUMBER_OF_RESULTS_BY_FULL_ADDRESS = 
         """
             select count(*) as count 
                 from addresses where full_address like ?
+        """;
+
+    public static final String SQL_NUMBER_OF_RESULTS_BY_POSTAL_CODE = 
+        """
+            select count(*) as count 
+                from addresses where postal_code like ?
         """;
 
     public static final String SQL_FIND_ADDRESSES_BY_FULL_ADDRESS = "select * from addresses where full_address like ? limit ? offset ?";

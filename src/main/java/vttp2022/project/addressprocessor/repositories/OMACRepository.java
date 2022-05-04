@@ -18,9 +18,17 @@ public class OMACRepository {
     
     @Autowired private JdbcTemplate template;
 
-    public Integer getNumberOfResults(String searchTerm) {
+    public Integer getNumberOfResults(String searchTerm, String searchBy) {
 
-        SqlRowSet rs = template.queryForRowSet(SQL_NUMBER_OF_RESULTS, searchTerm);
+        SqlRowSet rs = null;
+        switch (searchBy) {
+            case "address":
+                rs = template.queryForRowSet(SQL_NUMBER_OF_RESULTS_BY_FULL_ADDRESS, searchTerm);
+                break;
+            case "postalcode":
+                rs = template.queryForRowSet(SQL_NUMBER_OF_RESULTS_BY_POSTAL_CODE, searchTerm);
+                break;
+        }
 
         Integer noOfResults = 0;
 
@@ -36,9 +44,13 @@ public class OMACRepository {
         SqlRowSet rs = null;
         switch (searchBy) {
             case "address":
+                System.out.println("CASE: ADDRESS");
                 rs = template.queryForRowSet(SQL_FIND_ADDRESSES_BY_FULL_ADDRESS, searchTerm, limit, offset);
+                break;
             case "postalcode":
+                System.out.println("CASE: POSTAL");
                 rs = template.queryForRowSet(SQL_FIND_ADDRESSES_BY_POSTAL_CODE, searchTerm, limit, offset);
+                break;
         }
 
         List<AddressResult> addResultsList = new LinkedList<>();

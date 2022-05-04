@@ -20,7 +20,6 @@
             </table>
         </form>
         <p>Please visit the <a th:href="@{haventdoyetlah}">HELP</a> page if you require further assistance.</p>
-        <br>
         <p th:unless="${message.empty}"><code th:text="${message}"></code></p>
         <p th:if="${!fileName.empty}">
             <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
@@ -29,20 +28,24 @@
             <table border="1">
                 <tr>
                     <td>Quick search:</td>
-                    <td><input type="text" placeholder="type here" name="searchValue"></td>
+                    <td><input type="text" placeholder="type here" name="searchValue" th:value="${searchValue}"></td>
                     <td>
                         <input type="radio" name="searchBy" value="address" id="address">
                         <label for="address">Address</label>
                         <input type="radio" name="searchBy" value="postalcode" id="postalcode">
                         <label for="postalcode">Postal Code</label>
                     </td>
-                    <input type="hidden" name="page" th:value="1">
-                    <td><button type="submit" name="searchdb" value="searchDb">Search</button></td>
+                    <td><button type="submit">Search</button></td>
                 </tr>
             </table>
-        </form>
-        <form method="POST" action="/quicksearch">
+            <br>
+            <div th:if="${!searchValue.empty}">
+                Search results for '<span th:text="${searchValue}"></span>', <span th:text="${noOfResults}"></span> found, searched by <span th:text="${searchBy}"></span>
+            </div>
+            <br>
             <table border="1" th:if="${!resultList.empty}">
+                <input type="hidden" name="searchValue" th:value="${searchValue}">
+                <input type="hidden" name="searchBy" th:value="${searchBy}">
                 <tr>
                     <td>S_NO.</td>
                     <td>BLK_NO</td>
@@ -50,11 +53,6 @@
                     <td>BUILDING</td>
                     <td>FULL_ADDRESS</td>
                     <td>POSTAL_CODE</td>
-                </tr>
-                <tr>
-                    Search results for '<span th:text="${searchValue}"></span>', <span th:text="${noOfResults}"></span> found.
-                    <input type="hidden" name="searchValue" th:value="${searchValue}">
-                    <input type="hidden" name="searchBy" th:value="${searchBy}">
                 </tr>
                 <tr th:each="a : ${resultList}">
                     <td th:text="${aStat.count} + 10 * (${page} - 1)"></td>
@@ -64,7 +62,7 @@
                     <td th:text="${a.fullAddress}"></td>
                     <td th:text="${a.postalCode}"></td>
                 </tr>
-                <tr>
+                <tr th:if="${noOfResults}/10 > 1">
                     <td th:if="${page} > 1">
                         <button type="submit" name="page" th:value="${page} - 1">Prev</button>
                     </td>
@@ -72,6 +70,17 @@
                     <td th:if="${page} != 1" colspan="4"></td>
                     <td th:if="${page} < (${noOfResults} / 10)"><button type="submit" name="page" th:value="${page} + 1">Next</button></td>
                 </tr>
+            </table>
+        </form>
+        <form method="POST" action="/downloadsearchresults" th:if="${!resultList.empty}">
+            <table>
+              <tr>
+                  <td>
+                      <button type="submit">Request</button> a download of the searched results.
+                      <input type="hidden" name="searchValue" th:value="${searchValue}">
+                      <input type="hidden" name="searchBy" th:value="${searchBy}">      
+                  </td>
+              </tr>  
             </table>
         </form>
     </body>

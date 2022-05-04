@@ -29,11 +29,11 @@ public class AppController {
     
     @Autowired private DigitalOceanService doSvc;
 
-    //Get homepage
     @GetMapping(path={"", "/upload"})
     public ModelAndView getIndex() {       
-        System.out.println("Get index.html");
+
         ModelAndView mvc = new ModelAndView();
+
         mvc.addObject("message", "");
         mvc.addObject("fileName", "");
 
@@ -44,6 +44,7 @@ public class AppController {
         mvc.addObject("page", 1);
         mvc.setViewName("index");
         return mvc;
+
     }
 
     @PostMapping(path="/upload")
@@ -103,26 +104,29 @@ public class AppController {
         }
     }
 
-    //after user typed in search term and hit search
-    @PostMapping(path="/quicksearch", params = "searchdb")
-    public ModelAndView postQuickSearch(
-        @RequestBody MultiValueMap<String, String> form) {
+    @PostMapping(path="/quicksearch")
+    public ModelAndView postPage(@RequestBody MultiValueMap<String, String> formData) {
 
-        System.out.println("post search button pressed");
         ModelAndView mvc = new ModelAndView();
-
-        String searchBy = form.getFirst("searchBy");
-        System.out.println(">>>>>>> " + searchBy);
         
-        Integer pageInt = Integer.parseInt(form.getFirst("page"));
+        String page = formData.getFirst("page");
+        Integer pageInt = 0;
+        if (null == page) {
+            pageInt = 1;
+        } else {
+            pageInt = Integer.parseInt(formData.getFirst("page"));
 
-        String searchTerm = form.getFirst("searchValue");
+        }
+        Integer offset = 0 + 10 * (pageInt - 1);
+        
+        String searchBy = formData.getFirst("searchBy");
+        System.out.println("searching by>>>>>" + searchBy);
+        String searchTerm = formData.getFirst("searchValue");
         String searchTermForSQL = "%" + searchTerm + "%";
-
-        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, 0, searchBy);
-
-        Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL);
-
+            
+        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset, searchBy);
+        Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL, searchBy);
+        System.out.println("number of results found: " + noOfResults);
         mvc.addObject("message", "");
         mvc.addObject("fileName", "");
         
@@ -136,33 +140,25 @@ public class AppController {
         return mvc;
     }
 
-    //after user hit search, this will reflect next or prev page
-    @PostMapping(path="/quicksearch", params="page")
-    public ModelAndView postPage(
-        @RequestBody MultiValueMap<String, String> formData) {
-        System.out.println("post page button pressed");
+    @PostMapping(path="/downloadsearchresults")
+    public ModelAndView postDownloadSearchResults(@RequestBody MultiValueMap<String, String> formData) {
+
         ModelAndView mvc = new ModelAndView();
-            
-        Integer pageInt = Integer.parseInt(formData.getFirst("page"));
-        Integer offset = 0 + 10 * (pageInt - 1);
-        
+
         String searchBy = formData.getFirst("searchBy");
         String searchTerm = formData.getFirst("searchValue");
         String searchTermForSQL = "%" + searchTerm + "%";
             
-        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset, searchBy);
-        Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL);
-
-        mvc.addObject("message", "");
-        mvc.addObject("fileName", "");
-        
-        mvc.addObject("resultList", addResultsList);
-        mvc.addObject("searchValue", searchTerm);
-        mvc.addObject("searchBy", searchBy);
-        mvc.addObject("noOfResults", noOfResults);
-        mvc.addObject("page", pageInt);
-        mvc.setViewName("index");
-
-        return mvc;
+        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 150000, 0, searchBy);
+        try {
+            String filename = doSvc.writeToByteArray(addResultsList);
+            mvc.addObject("fileName", filename);
+            mvc.setViewName("download");
+            return mvc;
+        } catch (WriteToByteArrayException wtbae) {
+            mvc.addObject("message", "wtbae");
+            mvc.setViewName("error");
+            return mvc;
+        }
     }
 }

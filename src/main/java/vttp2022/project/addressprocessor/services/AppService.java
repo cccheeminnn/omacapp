@@ -162,7 +162,7 @@ public class AppService {
         return addResultsList;
     }
 
-    public Integer getNumberOfResults(String searchTerm) {
-        return omacRepo.getNumberOfResults(searchTerm);
+    public Integer getNumberOfResults(String searchTerm, String searchBy) {
+        return omacRepo.getNumberOfResults(searchTerm, searchBy);
     }
 }
