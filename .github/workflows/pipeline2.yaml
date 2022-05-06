@@ -1,0 +1,17 @@
+#only upon new release, push to heroku
+name: Deployment to Heroku
+on: 
+  release:
+    types: [published]
+jobs:
+  deploy_to_heroku:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout src
+      uses: actions/checkout@v3
+    - name: Deploy
+      uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      with: 
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        heroku_app_name: "pipeline2test" #Must be unique in Heroku
+        heroku_email: ${{secrets.HEROKU_EMAIL}}
