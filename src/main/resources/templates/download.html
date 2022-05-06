@@ -8,5 +8,16 @@
 </head>
 <body>
     <h2><a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a></h2>
+    <form method="POST" action="/sendemail">
+        <input type="hidden" name="fileName" th:value="${fileName}">
+        <table>
+            <tr>
+                <td>Have the file sent to your email:</td>
+                <td><input type="text" name="toEmail" placeholder="your email" required></td>
+                <td><button type="submit">Send!</button></td>
+            </tr>
+        </table>
+    </form>
+    <a th:href="@{/}">Back</a>
 </body>
 </html>

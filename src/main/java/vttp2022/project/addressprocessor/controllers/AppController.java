@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
@@ -20,6 +22,7 @@ import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
 import vttp2022.project.addressprocessor.services.AppService;
 import vttp2022.project.addressprocessor.services.DigitalOceanService;
+import vttp2022.project.addressprocessor.services.EmailService;
 
 @Controller
 @RequestMapping(path="")
@@ -28,6 +31,19 @@ public class AppController {
     @Autowired private AppService appSvc;
     
     @Autowired private DigitalOceanService doSvc;
+
+    @Autowired private EmailService emailSvc;
+
+    @PostMapping(path="/sendemail")
+    public ModelAndView postSendEmailTest(@RequestBody MultiValueMap<String, String> formData) {
+        System.out.println("attempting to send email");
+        try {
+            emailSvc.sendEmailWithAttachment(formData.getFirst("toEmail"), formData.getFirst("fileName"));
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return new ModelAndView("redirect:/");
+    }
 
     @GetMapping(path={"", "/upload"})
     public ModelAndView getIndex() {       
