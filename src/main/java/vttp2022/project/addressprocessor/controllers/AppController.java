@@ -78,7 +78,7 @@ public class AppController {
         //application/vnd.ms-excel - .csv
         System.out.println("uploaded file contentType is " + file.getContentType());
         //if the file is empty or if the file uploaded is not .csv format
-        if(file.isEmpty() || !file.getContentType().equals("application/vnd.ms-excel") || !file.getContentType().equals("text/csv")) {
+        if(file.isEmpty() || !file.getContentType().equals("application/vnd.ms-excel") && !file.getContentType().equals("text/csv")) {
             
             mvc.addObject("message", "invalidfiletype");
             mvc.setViewName("error");
