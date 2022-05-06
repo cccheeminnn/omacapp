@@ -47,6 +47,13 @@ public class AppController {
 
     }
 
+    @GetMapping(path="/help")
+    public ModelAndView getHelp() {
+        ModelAndView mvc = new ModelAndView("help");
+
+        return mvc;
+    }
+
     @PostMapping(path="/upload")
     public ModelAndView postUpload(@RequestParam("csv-file") MultipartFile file) {
         
