@@ -1,5 +1,5 @@
 # push to github, test code and push badge to repo front page
-name: Compile and deploy
+name: Checkout, setup Java and Maven
 
 on:
   push:
@@ -27,31 +27,31 @@ jobs:
     # - name: Run test
     #   run: mvn clean verify
 
-    - name: Generate Jacoco badge
-      uses: cicirello/jacoco-badge-generator@v2
-      with:
-        generate-coverage-badge: true
+    # - name: Generate Jacoco badge
+    #   uses: cicirello/jacoco-badge-generator@v2
+    #   with:
+    #     generate-coverage-badge: true
 
-    - name: Upload coverage badge to DO spaces
-      uses: BetaHuhn/do-spaces-action@v2
-      with:
-          access_key: ${{secrets.DO_ACCESS_KEY}}
-          secret_key: ${{secrets.DO_SECRET_KEY}}
-          space_name: bigcontainer
-          space_region: sgp1
-          # source is the file that you wanna upload to DO
-          source: .github/badges/jacoco.svg
-          # out_dir is the output directory in DO 
-          out_dir: coverage/${{github.event.repository.name}}
-          # by default permission is already public-read
-          permission: public-read
+    # - name: Upload coverage badge to DO spaces
+    #   uses: BetaHuhn/do-spaces-action@v2
+    #   with:
+    #       access_key: ${{secrets.DO_ACCESS_KEY}}
+    #       secret_key: ${{secrets.DO_SECRET_KEY}}
+    #       space_name: bigcontainer
+    #       space_region: sgp1
+    #       # source is the file that you wanna upload to DO
+    #       source: .github/badges/jacoco.svg
+    #       # out_dir is the output directory in DO 
+    #       out_dir: coverage/${{github.event.repository.name}}
+    #       # by default permission is already public-read
+    #       permission: public-read
       
-    - name: Upload whole jacoco coverage report
-      uses: BetaHuhn/do-spaces-action@v2
-      with:
-          access_key: ${{secrets.DO_ACCESS_KEY}}
-          secret_key: ${{secrets.DO_SECRET_KEY}}
-          space_name: bigcontainer
-          space_region: sgp1
-          source: target/site/jacoco
-          out_dir: coverage/${{github.event.repository.name}}
+    # - name: Upload whole jacoco coverage report
+    #   uses: BetaHuhn/do-spaces-action@v2
+    #   with:
+    #       access_key: ${{secrets.DO_ACCESS_KEY}}
+    #       secret_key: ${{secrets.DO_SECRET_KEY}}
+    #       space_name: bigcontainer
+    #       space_region: sgp1
+    #       source: target/site/jacoco
+    #       out_dir: coverage/${{github.event.repository.name}}
