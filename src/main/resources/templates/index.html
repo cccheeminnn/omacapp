@@ -7,9 +7,6 @@
         <title>Document</title>
     </head>
     <body>
-        <form action="/sendemail" method="GET">
-            <button type="submit">test</button>
-        </form>
         <h1>Welcome to OMAC, the One Map API Caller!</h1>
         <h2>Please upload a non UTF-8 .csv file :)</h2>
         <form method="POST" action="/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
@@ -27,6 +24,18 @@
         <p th:if="${!fileName.empty}">
             <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
         </p>
+        <div th:if="${!fileName.empty}">
+            <form method="POST" action="/sendemail">
+                <input type="hidden" name="fileName" th:value="${fileName}">
+                <table>
+                    <tr>
+                        <td>Have the file sent to your email:</td>
+                        <td><input type="text" name="toEmail" placeholder="your email" required></td>
+                        <td><button type="submit">Send!</button></td>
+                    </tr>
+                </table>
+            </form>    
+        </div>
         <form method="POST" action="/quicksearch">
             <table border="1">
                 <tr>

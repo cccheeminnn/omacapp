@@ -5,6 +5,8 @@ import java.net.MalformedURLException;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
@@ -22,26 +24,22 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String from;
     
-    public void sendEmailWithAttachment() throws MessagingException{
+    public void sendEmailWithAttachment(String toEmail, String fileName) throws MessagingException{
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-        messageHelper.setSubject("test OMAC test");
-        messageHelper.setTo("omacapp@outlook.com");
-        messageHelper.setText("here is your attachment", true);
+        messageHelper.setSubject("OMAC Query Results " + LocalDate.now() + " " + LocalTime.now());
+        messageHelper.setTo(toEmail);
+        messageHelper.setText("Thank you for using OMAC, here is your file attached!", true);
         messageHelper.setFrom(from);
 
         try {
             messageHelper.addAttachment(
-                "yourfilename.csv", 
-                new UrlResource("https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/0c93ea0d.csv"));
+                fileName +".csv", 
+                new UrlResource("https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/" + fileName + ".csv"));
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
         } 
-
-        // messageHelper.addAttachment(
-        //     "testfilename.csv", 
-        //     new ClassPathResource("static\\test2 (large).csv"));
 
         try {
             mailSender.send(mimeMessage);

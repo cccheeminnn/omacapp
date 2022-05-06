@@ -34,11 +34,11 @@ public class AppController {
 
     @Autowired private EmailService emailSvc;
 
-    @GetMapping(path="/sendemail")
-    public ModelAndView postSendEmailTest() {
+    @PostMapping(path="/sendemail")
+    public ModelAndView postSendEmailTest(@RequestBody MultiValueMap<String, String> formData) {
         System.out.println("attempting to send email");
         try {
-            emailSvc.sendEmailWithAttachment();
+            emailSvc.sendEmailWithAttachment(formData.getFirst("toEmail"), formData.getFirst("fileName"));
         } catch (MessagingException e) {
             e.printStackTrace();
         }
