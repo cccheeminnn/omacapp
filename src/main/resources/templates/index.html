@@ -7,9 +7,10 @@
         <title>Document</title>
     </head>
     <body>
-        <h1>Welcome to OMAC, the One Map API Caller</h1>
+        <h1>Welcome to OMAC, the One Map API Caller!</h1>
+        <h2>Please upload a non UTF-8 .csv file :)</h2>
         <form method="POST" action="/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
-            <table>
+            <table border="1">
                 <tr>
                     <td><input type="file" name="csv-file" id="csv-file" accept=".csv" required></td>
                 </tr>
@@ -18,14 +19,69 @@
                 </tr>
             </table>
         </form>
-        <br>
-        <div th:if="${!fileName.empty}">
+        <p>Please visit the <a th:href="@{haventdoyetlah}">HELP</a> page if you require further assistance.</p>
+        <p th:unless="${message.empty}"><code th:text="${message}"></code></p>
+        <p th:if="${!fileName.empty}">
             <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
-        </div>
-        <div th:unless="${message.empty}"><code th:text="${message}"></code></div>
-        <p>P.S. v1.0.0 is very rough, working on implementing more features.</p>
-        <p>Basically upload a .csv file like <a href="https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/Sample/test1%20%28small%29%20no%20bom.csv">this</a> one,</p>
-        <p>the app looks for the column header "address" and use this column as the search term to query the API</p>
-        <p>Including other info like Blk No in the cells under column header "address" will cos the queried result to return 0.</p>
+        </p>
+        <form method="POST" action="/quicksearch">
+            <table border="1">
+                <tr>
+                    <td>Quick search:</td>
+                    <td><input type="text" placeholder="type here" name="searchValue" th:value="${searchValue}"></td>
+                    <td>
+                        <input type="radio" name="searchBy" value="address" id="address">
+                        <label for="address">Address</label>
+                        <input type="radio" name="searchBy" value="postalcode" id="postalcode">
+                        <label for="postalcode">Postal Code</label>
+                    </td>
+                    <td><button type="submit">Search</button></td>
+                </tr>
+            </table>
+            <br>
+            <div th:if="${!searchValue.empty}">
+                Search results for '<span th:text="${searchValue}"></span>', <span th:text="${noOfResults}"></span> found, searched by <span th:text="${searchBy}"></span>
+            </div>
+            <br>
+            <table border="1" th:if="${!resultList.empty}">
+                <input type="hidden" name="searchValue" th:value="${searchValue}">
+                <input type="hidden" name="searchBy" th:value="${searchBy}">
+                <tr>
+                    <td>S_NO.</td>
+                    <td>BLK_NO</td>
+                    <td>ROADNAME</td>
+                    <td>BUILDING</td>
+                    <td>FULL_ADDRESS</td>
+                    <td>POSTAL_CODE</td>
+                </tr>
+                <tr th:each="a : ${resultList}">
+                    <td th:text="${aStat.count} + 10 * (${page} - 1)"></td>
+                    <td th:text="${a.blkNo}"></td>
+                    <td th:text="${a.roadName}"></td>
+                    <td th:text="${a.building}"></td>
+                    <td th:text="${a.fullAddress}"></td>
+                    <td th:text="${a.postalCode}"></td>
+                </tr>
+                <tr th:if="${noOfResults}/10 > 1">
+                    <td th:if="${page} > 1">
+                        <button type="submit" name="page" th:value="${page} - 1">Prev</button>
+                    </td>
+                    <td th:if="${page} == 1" colspan="5"></td>
+                    <td th:if="${page} != 1" colspan="4"></td>
+                    <td th:if="${page} < (${noOfResults} / 10)"><button type="submit" name="page" th:value="${page} + 1">Next</button></td>
+                </tr>
+            </table>
+        </form>
+        <form method="POST" action="/downloadsearchresults" th:if="${!resultList.empty}">
+            <table>
+              <tr>
+                  <td>
+                      <button type="submit">Request</button> a download of the searched results.
+                      <input type="hidden" name="searchValue" th:value="${searchValue}">
+                      <input type="hidden" name="searchBy" th:value="${searchBy}">      
+                  </td>
+              </tr>  
+            </table>
+        </form>
     </body>
 </html>

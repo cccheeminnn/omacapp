@@ -1,26 +1,15 @@
 package vttp2022.project.addressprocessor.services;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
-
-import com.amazonaws.SdkClientException;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.opencsv.CSVWriter;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +25,14 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 
-import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
+import vttp2022.project.addressprocessor.repositories.OMACRepository;
 
 @Service
 public class AppService {
-    
-    @Autowired 
-    private AmazonS3 s3;
 
+    @Autowired private OMACRepository omacRepo;
+    
     private static final String ONE_MAP_URL = "https://developers.onemap.sg/commonapi/search";
     //will be updating the code to remove leaky abstraction
     public Set<String> parseSearchValue(MultipartFile file) throws IOException {
@@ -114,7 +102,10 @@ public class AppService {
 
                     AddressResult addResult = AddressResult.create(obj);
 
-                    addResultList.add(addResult);
+                    if (!addResult.getPostalCode().equals("NIL")) {
+                        addResultList.add(addResult);
+                    } 
+                    
                 });
 
             } else { //more than 1 page
@@ -142,72 +133,14 @@ public class AppService {
 
                         AddressResult addResult = AddressResult.create(obj);
                         
-                        addResultList.add(addResult);
+                        if (!addResult.getPostalCode().equals("NIL")) {
+                            addResultList.add(addResult);
+                        }
                     });
                 }
             }
         }
         return addResultList;
-    }
-
-    public String writeToByteArray(List<AddressResult> addResultList) throws WriteToByteArrayException {
-
-        //CSVWriter writes to OutputStreamWriter writes to ByteArrayOutputStream
-        //PutObjectRequest InputStream uses ByteArrayOutputStream to write to DO
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
-        try (CSVWriter writer = new CSVWriter(streamWriter)) {
-
-            String[] colHeader = {
-                "BLK_NO", 
-                "ROAD_NAME", 
-                "BUILDING", 
-                "ADDRESS", 
-                "POSTAL"
-            };
-            writer.writeNext(colHeader);
-
-            for (AddressResult addResult : addResultList) {
-
-                String[] addressResultObjStr = {
-                    addResult.getBlkNo(), 
-                    addResult.getRoadName(), 
-                    addResult.getBuilding(), 
-                    addResult.getFullAddress(), 
-                    addResult.getPostalCode()
-                };
-                writer.writeNext(addressResultObjStr);
-            }
-
-        } catch (IOException ioe) {
-            WriteToByteArrayException wtbae = new WriteToByteArrayException("WriteToByteArrayException occurred");
-            throw wtbae; //something went wrong while writing, at this point shouldnt occur 
-        } 
-
-        return writeByteArrayToDO(outputStream);
-    }
-
-    private String writeByteArrayToDO(ByteArrayOutputStream outputStream) {
-
-        String filename = UUID.randomUUID().toString().substring(0, 8);
-
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(outputStream.toByteArray().length);
-
-        PutObjectRequest putReq = new PutObjectRequest(
-            "bigcontainer", 
-            "OMAC/csv/%s.csv".formatted(filename), 
-            new ByteArrayInputStream(outputStream.toByteArray()),
-            metadata
-        );
-        putReq.setCannedAcl(CannedAccessControlList.PublicRead);
-
-        try {
-            s3.putObject(putReq);
-            return filename;
-        } catch (SdkClientException sce) {
-            return ""; //something went wrong while putting into DO
-        }
     }
 
     //parse the entire col header into a String separated by a comma
@@ -216,5 +149,20 @@ public class AppService {
         System.out.println("rowStr >>> " + rowStr);
         String[] colHeaderStrArray = rowStr.split(",");
         return ArrayUtils.indexOf(colHeaderStrArray, searchStr);
+    }
+
+    //for index page search fields result
+    public List<AddressResult> getAddressesFromSearchValue (
+        String searchTerm, Integer limit, Integer offset, String searchBy) {
+
+        List<AddressResult> addResultsList = new LinkedList<>();
+
+        addResultsList = omacRepo.getFullAddresses(searchTerm, limit, offset, searchBy);
+
+        return addResultsList;
+    }
+
+    public Integer getNumberOfResults(String searchTerm, String searchBy) {
+        return omacRepo.getNumberOfResults(searchTerm, searchBy);
     }
 }

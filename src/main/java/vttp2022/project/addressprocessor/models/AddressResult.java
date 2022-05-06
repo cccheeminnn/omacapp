@@ -1,5 +1,7 @@
 package vttp2022.project.addressprocessor.models;
 
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
 import jakarta.json.JsonObject;
 
 public class AddressResult {
@@ -24,6 +26,7 @@ public class AddressResult {
     public String getPostalCode() {return postalCode;}
     public void setPostalCode(String postalCode) {this.postalCode = postalCode;}
 
+    //from API
     public static AddressResult create(JsonObject object) {
         AddressResult addResult = new AddressResult();
         addResult.setBlkNo(object.getString("BLK_NO"));
@@ -31,6 +34,17 @@ public class AddressResult {
         addResult.setBuilding(object.getString("BUILDING"));
         addResult.setFullAddress(object.getString("ADDRESS"));
         addResult.setPostalCode(object.getString("POSTAL"));
+        return addResult;
+    }
+
+    //from database
+    public static AddressResult populate(SqlRowSet rs) {
+        AddressResult addResult = new AddressResult();
+        addResult.setBlkNo(rs.getString("BLK_NO"));
+        addResult.setRoadName(rs.getString("ROAD_NAME"));
+        addResult.setBuilding(rs.getString("BUILDING"));
+        addResult.setFullAddress(rs.getString("FULL_ADDRESS"));
+        addResult.setPostalCode(Integer.toString(rs.getInt("POSTAL_CODE")));
         return addResult;
     }
 }
