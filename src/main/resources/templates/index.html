@@ -7,6 +7,7 @@
         <title>Document</title>
     </head>
     <body>
+        <h1>Welcome to OMAC, the One Map API Caller</h1>
         <form method="POST" action="/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
             <table>
                 <tr>
@@ -22,5 +23,9 @@
             <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
         </div>
         <div th:unless="${message.empty}"><code th:text="${message}"></code></div>
+        <p>P.S. v1.0.0 is very rough, working on implementing more features.</p>
+        <p>Basically upload a .csv file like <a href="https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/Sample/test1%20%28small%29%20no%20bom.csv">this</a> one,</p>
+        <p>the app looks for the column header "address" and use this column as the search term to query the API</p>
+        <p>Including other info like Blk No in the cells under column header "address" will cos the queried result to return 0.</p>
     </body>
 </html>
