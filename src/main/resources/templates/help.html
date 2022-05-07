@@ -8,21 +8,20 @@
 </head>
 <body>
     <h1>Welcome to the Help! page.</h1>
-    The app works pretty straightforward, user should upload a .csv file with populated with street names like the following files. 
-    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/Sample/SG%20Streets%20Name%20-%2050.csv}">50</a>,
-    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/Sample/SG%20Streets%20Name%20-%20250.csv}">250</a>, or
-    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/Sample/SG%20Streets%20Name%20-%20500.csv}">500</a> Singapore street names
+    The app works pretty straightforward, user should upload a .csv file populated with street names like the following files. 
+    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2010.csv}">10</a>,
+    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2015.csv}">15</a>, or
+    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2025.csv}">25</a> Singapore street names
     <br>
     <br>
     The two things to look out for are the column header should be "address" and the column fields should ONLY consist of the street name. 
     <br>
     <br>
-    Depending on how many streets are uploaded the query would take longer/shorter. 
+    Depending on how many streets are uploaded the query would take longer/shorter, Heroku has a request timeout of 30s. Thus sample files rows are limited. 
     <br>
     <br>
-    After the query is complete, a file is created on DO spaces and a direct download link to the file is given to the user,
-    <br>
-    the user can then either choose to download to the file or have it sent to their email instead!
+    After the query is complete, a file is created on DO spaces and a direct download link to the file is given to the user, 
+    the user can then either choose to download the file locally or have it sent to their email instead!
     <br>
     <br>
     <a th:href="@{/}">Back</a>

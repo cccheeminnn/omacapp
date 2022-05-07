@@ -7,7 +7,8 @@
     <title>Document</title>
 </head>
 <body>
-    <h2><a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a></h2>
+    <h1>Download Page</h1>
+    <p>Here is your <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">download</a>!</p>
     <form method="POST" action="/sendemail">
         <input type="hidden" name="fileName" th:value="${fileName}">
         <table>

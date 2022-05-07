@@ -34,25 +34,12 @@ public class AppController {
 
     @Autowired private EmailService emailSvc;
 
-    @PostMapping(path="/sendemail")
-    public ModelAndView postSendEmailTest(@RequestBody MultiValueMap<String, String> formData) {
-        System.out.println("attempting to send email");
-        try {
-            emailSvc.sendEmailWithAttachment(formData.getFirst("toEmail"), formData.getFirst("fileName"));
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
-        return new ModelAndView("redirect:/");
-    }
-
-    @GetMapping(path={"", "/upload"})
+    @GetMapping(path={""})
     public ModelAndView getIndex() {       
-
         ModelAndView mvc = new ModelAndView();
 
         mvc.addObject("message", "");
         mvc.addObject("fileName", "");
-
         mvc.addObject("resultList", Collections.emptyList());
         mvc.addObject("searchValue", "");
         mvc.addObject("searchBy", "");
@@ -60,34 +47,25 @@ public class AppController {
         mvc.addObject("page", 1);
         mvc.setViewName("index");
         return mvc;
-
     }
 
     @GetMapping(path="/help")
     public ModelAndView getHelp() {
-        ModelAndView mvc = new ModelAndView("help");
-
-        return mvc;
+        return new ModelAndView("help");
     }
 
     @PostMapping(path="/upload")
     public ModelAndView postUpload(@RequestParam("csv-file") MultipartFile file) {
-        
         ModelAndView mvc = new ModelAndView();
 
         //application/vnd.ms-excel - .csv
-        System.out.println("uploaded file contentType is " + file.getContentType());
         //if the file is empty or if the file uploaded is not .csv format
         if(file.isEmpty() || !file.getContentType().equals("application/vnd.ms-excel") && !file.getContentType().equals("text/csv")) {
-            
             mvc.addObject("message", "invalidfiletype");
             mvc.setViewName("error");
             return mvc;
-
         } else {
-
             try {
-
                 Set<String> searchValSet = appSvc.parseSearchValue(file);
                 if (searchValSet.isEmpty()) {
                     mvc.addObject("message", "addressnotincolheader");
@@ -104,17 +82,9 @@ public class AppController {
                     return mvc;    
                 }
                 
-                mvc.addObject("message", "Here is your search results!");
                 mvc.addObject("fileName", filename);
-
-                mvc.addObject("resultList", Collections.emptyList());
-                mvc.addObject("searchValue", "");
-                mvc.addObject("searchBy", "");
-                mvc.addObject("noOfResults", "");
-                mvc.addObject("page", 1);
-                mvc.setViewName("index");
+                mvc.setViewName("download");
                 return mvc;        
-
             } catch (IOException ioe) {
                 mvc.addObject("message", "ioe");
                 mvc.setViewName("error");
@@ -129,7 +99,6 @@ public class AppController {
 
     @PostMapping(path="/quicksearch")
     public ModelAndView postPage(@RequestBody MultiValueMap<String, String> formData) {
-
         ModelAndView mvc = new ModelAndView();
         
         String page = formData.getFirst("page");
@@ -143,16 +112,14 @@ public class AppController {
         Integer offset = 0 + 10 * (pageInt - 1);
         
         String searchBy = formData.getFirst("searchBy");
-        System.out.println("searching by>>>>>" + searchBy);
         String searchTerm = formData.getFirst("searchValue");
         String searchTermForSQL = "%" + searchTerm + "%";
             
         List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset, searchBy);
         Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL, searchBy);
-        System.out.println("number of results found: " + noOfResults);
+
         mvc.addObject("message", "");
         mvc.addObject("fileName", "");
-        
         mvc.addObject("resultList", addResultsList);
         mvc.addObject("searchValue", searchTerm);
         mvc.addObject("searchBy", searchBy);
@@ -165,7 +132,6 @@ public class AppController {
 
     @PostMapping(path="/downloadsearchresults")
     public ModelAndView postDownloadSearchResults(@RequestBody MultiValueMap<String, String> formData) {
-
         ModelAndView mvc = new ModelAndView();
 
         String searchBy = formData.getFirst("searchBy");
@@ -184,4 +150,15 @@ public class AppController {
             return mvc;
         }
     }
+
+    @PostMapping(path="/sendemail")
+    public ModelAndView postSendEmailTest(@RequestBody MultiValueMap<String, String> formData) {
+        try {
+            emailSvc.sendEmailWithAttachment(formData.getFirst("toEmail"), formData.getFirst("fileName"));
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        return new ModelAndView("redirect:/");
+    }
+
 }
