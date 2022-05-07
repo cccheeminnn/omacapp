@@ -54,6 +54,7 @@ public class AppController {
         return new ModelAndView("help");
     }
 
+    //upload queries One Map API
     @PostMapping(path="/upload")
     public ModelAndView postUpload(@RequestParam("csv-file") MultipartFile file) {
         ModelAndView mvc = new ModelAndView();
@@ -97,6 +98,7 @@ public class AppController {
         }
     }
 
+    //quicksearch queries the database
     @PostMapping(path="/quicksearch")
     public ModelAndView postPage(@RequestBody MultiValueMap<String, String> formData) {
         ModelAndView mvc = new ModelAndView();
