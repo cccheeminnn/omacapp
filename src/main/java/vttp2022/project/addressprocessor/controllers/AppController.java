@@ -82,9 +82,11 @@ public class AppController {
                     mvc.setViewName("error");
                     return mvc;    
                 }
-                
-                mvc.addObject("fileName", filename);
-                mvc.setViewName("download");
+                try {
+                    emailSvc.sendEmailWithAttachment("omacapp@outlook.com", filename);
+                } catch (Exception e) {
+                }
+                mvc.setViewName("email");
                 return mvc;        
             } catch (IOException ioe) {
                 mvc.addObject("message", "ioe");

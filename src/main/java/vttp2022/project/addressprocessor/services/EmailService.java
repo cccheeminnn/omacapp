@@ -13,6 +13,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,6 +25,7 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String from;
     
+    @Async
     public void sendEmailWithAttachment(String toEmail, String fileName) throws MessagingException{
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
