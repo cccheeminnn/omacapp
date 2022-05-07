@@ -74,29 +74,29 @@ public class AppController {
                     return mvc;    
                 }
 
-                List<AddressResult> queryResultList = appSvc.queryOneMapAPI(searchValSet);
+                appSvc.queryOneMapAPI(searchValSet);
 
-                String filename = doSvc.writeToByteArray(queryResultList);
-                if (filename.isBlank()) {
-                    mvc.addObject("message", "douploadwentwrong");
-                    mvc.setViewName("error");
-                    return mvc;    
-                }
-                try {
-                    emailSvc.sendEmailWithAttachment("omacapp@outlook.com", filename);
-                } catch (Exception e) {
-                }
+                // String filename = doSvc.writeToByteArray(queryResultList);
+                // if (filename.isBlank()) {
+                //     mvc.addObject("message", "douploadwentwrong");
+                //     mvc.setViewName("error");
+                //     return mvc;    
+                // }
+                // try {
+                //     emailSvc.sendEmailWithAttachment("omacapp@outlook.com", filename);
+                // } catch (Exception e) {
+                // }
                 mvc.setViewName("email");
                 return mvc;        
             } catch (IOException ioe) {
                 mvc.addObject("message", "ioe");
                 mvc.setViewName("error");
                 return mvc;
-            } catch (WriteToByteArrayException wtbae) {
-                mvc.addObject("message", "wtbae");
-                mvc.setViewName("error");
-                return mvc;
-            }
+            } //catch (WriteToByteArrayException wtbae) {
+            //     mvc.addObject("message", "wtbae");
+            //     mvc.setViewName("error");
+            //     return mvc;
+            // }
         }
     }
 

@@ -15,6 +15,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,10 @@ import vttp2022.project.addressprocessor.repositories.OMACRepository;
 public class AppService {
 
     @Autowired private OMACRepository omacRepo;
+
+    @Autowired private DigitalOceanService doSvc;
+
+    @Autowired private EmailService emailSvc;
     
     private static final String ONE_MAP_URL = "https://developers.onemap.sg/commonapi/search";
     //will be updating the code to remove leaky abstraction
@@ -64,7 +69,8 @@ public class AppService {
         return addressSet;
     }
     
-    public List<AddressResult> queryOneMapAPI(Set<String> addressSet) {
+    @Async("threadPoolTaskExecutor")
+    public void queryOneMapAPI(Set<String> addressSet) {
         
         List<AddressResult> addResultList = new ArrayList<>();
         System.out.println("addList(searchVal) length >> " + addressSet.size());
@@ -140,7 +146,13 @@ public class AppService {
                 }
             }
         }
-        return addResultList;
+
+        try {
+            String filename = doSvc.writeToByteArray(addResultList);
+            emailSvc.sendEmailWithAttachment("omacapp@outlook.com", filename);
+        } catch (Exception e) {
+        }
+
     }
 
     //parse the entire col header into a String separated by a comma

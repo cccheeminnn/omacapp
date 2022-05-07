@@ -25,9 +25,8 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String from;
     
-    @Async
     public void sendEmailWithAttachment(String toEmail, String fileName) throws MessagingException{
-
+        System.out.println("ASYNCCC");
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
         messageHelper.setSubject("OMAC Query Results " + LocalDate.now() + " " + LocalTime.now());
