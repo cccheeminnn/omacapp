@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import vttp2022.project.addressprocessor.Utils.ReadCsvUtil;
 import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
 import vttp2022.project.addressprocessor.services.AppService;
@@ -35,68 +37,85 @@ public class AppController {
     @Autowired private EmailService emailSvc;
 
     @GetMapping(path={""})
-    public ModelAndView getIndex() {       
-        ModelAndView mvc = new ModelAndView();
+    public ModelAndView getIndex() 
+    {       
+        ModelAndView mvc = new ModelAndView("index");
 
-        mvc.addObject("message", "");
+        mvc.addObject("above20searches", "");
         mvc.addObject("fileName", "");
         mvc.addObject("resultList", Collections.emptyList());
         mvc.addObject("searchValue", "");
         mvc.addObject("searchBy", "");
         mvc.addObject("noOfResults", "");
         mvc.addObject("page", 1);
-        mvc.setViewName("index");
         return mvc;
     }
 
     @GetMapping(path="/help")
-    public ModelAndView getHelp() {
+    public ModelAndView getHelp() 
+    {
         return new ModelAndView("help");
     }
 
     //upload queries One Map API
     @PostMapping(path="/upload")
-    public ModelAndView postUpload(@RequestParam("csv-file") MultipartFile file) {
+    public ModelAndView postUpload(@RequestParam("csv-file") MultipartFile file,
+        @RequestPart(required = false) String toEmail) 
+    {
         ModelAndView mvc = new ModelAndView();
 
-        //application/vnd.ms-excel - .csv
+        //application/vnd.ms-excel, text/csv - .csv
         //if the file is empty or if the file uploaded is not .csv format
-        if(file.isEmpty() || !file.getContentType().equals("application/vnd.ms-excel") && !file.getContentType().equals("text/csv")) {
+        if(!file.getContentType().equals("application/vnd.ms-excel") 
+            && !file.getContentType().equals("text/csv") || file.isEmpty()) 
+        {
             mvc.addObject("message", "invalidfiletype");
             mvc.setViewName("error");
             return mvc;
         } else {
             try {
-                Set<String> searchValSet = appSvc.parseSearchValue(file);
+                Set<String> searchValSet = ReadCsvUtil.parseSearchValue(file);
                 if (searchValSet.isEmpty()) {
+                    //if its empty, means address could not be found in column headers
                     mvc.addObject("message", "addressnotincolheader");
                     mvc.setViewName("error");
                     return mvc;    
+                } else if (searchValSet.size() < 20) {
+                    //safe to query onemap without @Async
+                    String fileName = appSvc.queryOneMapAPI(searchValSet);
+
+                    if (fileName.isBlank()) { // a WriteToByteArrayException occurred, failed to write to DO
+                        mvc.addObject("message", "wtbae");
+                        mvc.setViewName("error");
+                        return mvc;    
+                    } else {
+                        mvc.addObject("fileName", fileName);
+                        mvc.setViewName("download");
+                        return mvc;            
+                    }
+                } else if (searchValSet.size() >= 20 && null == toEmail) {
+                    //if there is more than 20 queries to be made, better to have file sent to email instead
+                    mvc.addObject("above20searches", "yes");
+                    mvc.addObject("fileName", "");
+                    mvc.addObject("resultList", Collections.emptyList());
+                    mvc.addObject("searchValue", "");
+                    mvc.addObject("searchBy", "");
+                    mvc.addObject("noOfResults", "");
+                    mvc.addObject("page", 1);
+                    mvc.setViewName("index");
+                    return mvc;
+                } else if (searchValSet.size() >= 20 && null != toEmail) {
+                    //this method is @Async because Heroku has a request timeout of 30s
+                    appSvc.queryOneMapAPIAsync(searchValSet, toEmail);
+                    mvc.setViewName("email");
+                    return mvc;        
                 }
-
-                appSvc.queryOneMapAPI(searchValSet);
-
-                // String filename = doSvc.writeToByteArray(queryResultList);
-                // if (filename.isBlank()) {
-                //     mvc.addObject("message", "douploadwentwrong");
-                //     mvc.setViewName("error");
-                //     return mvc;    
-                // }
-                // try {
-                //     emailSvc.sendEmailWithAttachment("omacapp@outlook.com", filename);
-                // } catch (Exception e) {
-                // }
-                mvc.setViewName("email");
-                return mvc;        
+                return mvc;
             } catch (IOException ioe) {
                 mvc.addObject("message", "ioe");
                 mvc.setViewName("error");
                 return mvc;
-            } //catch (WriteToByteArrayException wtbae) {
-            //     mvc.addObject("message", "wtbae");
-            //     mvc.setViewName("error");
-            //     return mvc;
-            // }
+            } 
         }
     }
 
@@ -122,7 +141,7 @@ public class AppController {
         List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset, searchBy);
         Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL, searchBy);
 
-        mvc.addObject("message", "");
+        mvc.addObject("above20searches", "");
         mvc.addObject("fileName", "");
         mvc.addObject("resultList", addResultsList);
         mvc.addObject("searchValue", searchTerm);
@@ -162,7 +181,7 @@ public class AppController {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-        return new ModelAndView("redirect:/");
+        return new ModelAndView("email");
     }
 
 }

@@ -14,14 +14,13 @@
     <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2025.csv}">25</a> Singapore street names
     <br>
     <br>
+    As Heroku has a request timeout duration of 30s, for 20 and above searches we recommend having the file sent straight to your email instead.
+    <br> 
     The two things to look out for are the column header should be "address" and the column fields should ONLY consist of the street name. 
     <br>
     <br>
-    Depending on how many streets are uploaded the query would take longer/shorter, Heroku has a request timeout of 30s. Thus sample files rows are limited. 
-    <br>
-    <br>
     After the query is complete, a file is created on DO spaces and a direct download link to the file is given to the user, 
-    the user can then either choose to download the file locally or have it sent to their email instead!
+    the user can then either choose to download the file locally or have it sent to their email instead.
     <br>
     <br>
     <a th:href="@{/}">Back</a>

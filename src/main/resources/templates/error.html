@@ -8,10 +8,10 @@
 </head>
 <body>
     <code th:if="${message} == 'ioe'">A IOException has occurred, please try uploading the .csv file again.</code>
-    <code th:if="${message} == 'wtbae'">A WriteToByteArrayException has occurred, please contact the administrator with the error message.</code>
+    <code th:if="${message} == 'wtbae'">A WriteToByteArrayException has occurred, please contact the administrator at omacapp@outlook.com with the error message.</code>
     <code th:if="${message} == 'invalidfiletype'">Please only upload a .csv filetype</code>
     <code th:if="${message} == 'addressnotincolheader'">Please ensure that you have a column header labeled "address" (without quotations).
         In the event that it is labeled correctly, please save your .csv file again as CSV and not CSV UTF-8.</code>
-    <code th:if="${message} == 'douploadwentwrong'">Something went wrong while uploading to DO, please contact the administrator with the error message.</code>
+    <code th:if="${message} == 'douploadwentwrong'">Something went wrong while uploading to DO, please contact the administrator at omacapp@outlook.com with the error message.</code>
 </body>
 </html>

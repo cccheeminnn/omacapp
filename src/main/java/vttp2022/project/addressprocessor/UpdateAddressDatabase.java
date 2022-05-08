@@ -27,14 +27,14 @@ import static vttp2022.project.addressprocessor.repositories.Queries.*;
 
 //parse in the file from Excel folder and refresh the database
 //excel file consist of all the streets name in singapore 
-//probably dont have to do this often
+//manually ran but probably dont have to do it often
 
-public class UpdateAddressDatabase {
+public final class UpdateAddressDatabase {
 
     private static final String ONE_MAP_URL = "https://developers.onemap.sg/commonapi/search";
     //just run
-    public static void main(String[] args) {
-
+    public static void main(String[] args) 
+    {
         String path = "Excel/SG Streets Name.csv";
 
         try {
@@ -50,7 +50,6 @@ public class UpdateAddressDatabase {
 
             List<AddressResult> addResultList = new LinkedList<>();
             for (String a : stringSet) {
-                
                 String url = UriComponentsBuilder
                     .fromUriString(ONE_MAP_URL)
                     .queryParam("searchVal", a.replace(" ", "+"))
@@ -73,26 +72,19 @@ public class UpdateAddressDatabase {
                 //some results has 1 page, some more than 1
                 int totalNumPages = object.getInt("totalNumPages");
                 if (totalNumPages == 1) {
-    
                     JsonArray array = object.getJsonArray("results");
     
                     array.stream().forEach(v -> {
-    
                         JsonObject obj = v.asJsonObject();
-    
                         AddressResult addResult = AddressResult.create(obj);
     
                         if (!addResult.getPostalCode().equals("NIL")) {
                             addResultList.add(addResult);
                         } 
-                        
                     });
-    
                 } else { //more than 1 page
-    
                     //starts at page 1 instead of 0 and <= because we want the last page
                     for (int i = 1; i <= totalNumPages; i++) {
-    
                         url = UriComponentsBuilder
                             .fromUriString(ONE_MAP_URL)
                             .queryParam("searchVal", a.replace(" ", "+"))
@@ -108,9 +100,7 @@ public class UpdateAddressDatabase {
                         JsonArray array = object.getJsonArray("results");
     
                         array.stream().forEach(v -> {
-    
                             JsonObject obj = v.asJsonObject();
-    
                             AddressResult addResult = AddressResult.create(obj);
                             
                             if (!addResult.getPostalCode().equals("NIL")) {
@@ -122,7 +112,6 @@ public class UpdateAddressDatabase {
             }
 
             JdbcTemplate template = new JdbcTemplate();
-            // DataSourceBuilder<Void> builder = DataSourceBuilder.create().url("url");
 
             template.setDataSource(
                 DataSourceBuilder.create()
@@ -142,7 +131,6 @@ public class UpdateAddressDatabase {
                     obj.getFullAddress(), 
                     obj.getPostalCode());
             }
-
         } catch (FileNotFoundException fnfe) {
             fnfe.printStackTrace();
         } catch (IOException ioe) {

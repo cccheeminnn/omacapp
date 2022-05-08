@@ -10,23 +10,19 @@ import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
     
-    @Autowired
-    private JavaMailSender mailSender;
+    @Autowired private JavaMailSender mailSender;
 
     @Value("${spring.mail.username}")
     private String from;
     
     public void sendEmailWithAttachment(String toEmail, String fileName) throws MessagingException{
-        System.out.println("ASYNCCC");
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
         messageHelper.setSubject("OMAC Query Results " + LocalDate.now() + " " + LocalTime.now());
@@ -37,15 +33,12 @@ public class EmailService {
         try {
             messageHelper.addAttachment(
                 fileName +".csv", 
-                new UrlResource("https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/" + fileName + ".csv"));
+                new UrlResource("https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/" + fileName + ".csv")
+            );
         } catch (MalformedURLException murle) {
             murle.printStackTrace();
-        } 
-
-        try {
-            mailSender.send(mimeMessage);
-        } catch (MailException me) {
-            me.printStackTrace();
         }
+        
+        mailSender.send(mimeMessage);
     }
 }
