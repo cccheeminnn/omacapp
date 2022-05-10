@@ -1,28 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Welcome to the Help! page.</h1>
-    The app works pretty straightforward, user should upload a .csv file populated with street names like the following files. 
-    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2010.csv}">10</a>,
-    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2015.csv}">15</a>, or
-    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2025.csv}">25</a> Singapore street names
-    <br>
-    <br>
-    As Heroku has a request timeout duration of 30s, for 20 and above searches we recommend having the file sent straight to your email instead.
-    <br> 
-    The two things to look out for are the column header should be "address" and the column fields should ONLY consist of the street name. 
-    <br>
-    <br>
-    After the query is complete, a file is created on DO spaces and a direct download link to the file is given to the user, 
-    the user can then either choose to download the file locally or have it sent to their email instead.
-    <br>
-    <br>
-    <a th:href="@{/}">Back</a>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FAQ</title>
+        <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" 
+        integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer"/>
+        <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" 
+        integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="/css/style.css">
+    </head>
+    <body>
+        <p>
+            <table class="centerTable">
+                <thead>
+                    <tr><td class="centerText"><h1>Welcome to OMAC</h1></td></tr>
+                    <tr><td class="centerText">the <img class="headerImg" src="/images/OneMapLogo.png"> Caller</td></tr>
+                    <tr><td><i class="fa-solid fa-road centerText" style="width: 100%;"></i></td></tr>
+                </thead>
+            </table>
+        </p>
+        <p>
+            <form>
+                <table class="centerTable">
+                    <tbody>
+                        <tr>
+                            <td class="centerText"><i class="fa-solid fa-angles-left"></i> <a href="/">Home</a></td>
+                        </tr>
+                        <tr>
+                            <td class="centerText"><a href="/help">FAQ</a> <i class="fa-solid fa-question"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </p>
+        <table class="centerTable">
+            <thead>
+                <tr><th colspan="2" class="centerText fontSizeXLarge">FAQ</th></tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="2" class="centerTextUnderline">Q: What is the use case here?</td></tr>
+                <tr><td colspan="2" class="centerText">A: For users who do not have complete addresses to do their mailers. 
+                    Or anyone who needs to complete a list of incomplete addresses, eg lacking in postal code.
+                </td></tr>
+                <tr><td colspan="2" ><hr class="dotted"></td></tr>
+                <tr><td colspan="2" class="centerTextUnderline">Q: How do I use this app?</td></tr>
+                <tr><td colspan="2" class="centerText">A: User should upload a .csv file populated with street names.</td></tr>
+                <tr><td colspan="2" class="centerText">
+                    example
+                    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2010.csv}">10</a>,
+                    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2015.csv}">15</a>, or
+                    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2025.csv}">25</a> Singapore street names.
+                </td></tr>
+                <tr><td colspan="2" class="centerText">
+                    Two things to make sure that they are inside the uploaded file is 
+                </td></tr>
+                <tr><td colspan="2" class="centerText">
+                    the column header <img src="/images/ExcelColHeader.png"> should have "address" and the column fields should consist ONLY of the street name. 
+                </td></tr>
+                <tr><td colspan="2" class="centerText"><img src="/images/ExcelExample.png"></td></tr>
+                <tr><td colspan="2" class="centerText">
+                    It does not matter if the "address" column is somewhere else not in the first column. 
+                </td></tr>
+                <tr><td colspan="2" ><hr class="dotted"></td></tr>
+                <tr><td colspan="2" class="centerTextUnderline">Q: What do you mean by .csv format file?</td></tr>
+                <tr><td colspan="2" class="centerText">
+                    A: Excel has two types of .csv file,
+                </td></tr>
+                <tr>
+                    <td class="centerText"><img src="/images/CSV.png" style="margin-left: 35%;"></td>
+                    <td class="centerText"><img src="/images/CSVUTF8.png" style="margin-right: 35%;"></td>
+                </tr>
+                <tr>
+                    <td class="centerText"><div style="margin-left: 35%; font-size: 75%;"><b><i>*CSV</i></b> format</div></td>
+                    <td class="centerText"><div style="margin-right: 35%; font-size: 75%;"><i>CSV UTF-8</i> format</div></td>
+                </tr>
+                <tr><td colspan="2" class="centerText">
+                    this app is only compatible with the <b>*CSV</b> format (left), not CSV UTF-8 (right).
+                </td></tr>
+                <tr><td colspan="2" ><hr class="dotted"></td></tr>
+                <tr><td colspan="2" class="centerTextUnderline">Q: Request timeout?</td></tr>
+                <tr><td colspan="2" class="centerText">A: As Heroku has a request timeout duration of 30s, for 20 and above searches 
+                    we recommend having the file sent straight to your email instead.
+                </td></tr>
+                <tr><td colspan="2" ><hr class="dotted"></td></tr>
+            </tbody>
+        </table>
+    </body>
 </html>

@@ -10,6 +10,7 @@
 .underlineText {
     text-decoration: underline;
 }
+
 .centerTextUnderline {
     text-align: center;
     text-decoration: underline;
@@ -37,4 +38,8 @@
 
 hr.dashed {
     border-top: 5px dashed #bbb;
+}
+
+hr.dotted {
+    border-top: 3px dotted #bbb;
 }
