@@ -5,98 +5,148 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
+        <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" 
+        integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer"/>
+        <link rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" 
+        integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw==" 
+        crossorigin="anonymous" 
+        referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="/css/style.css">
     </head>
     <body>
-        <h1>Welcome to OMAC</h1>
-        <h2>the One Map API Caller</h2>
-        <form method="POST" action="/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
-            <table border="1">
-                <tr>
-                    <td><input type="file" name="csv-file" id="csv-file" accept=".csv" required></td>
-                </tr>
-                <tr th:if="${above20searches == 'yes'}">
-                    <td><input type="email" name="toEmail" placeholder="Email"></td>
-                </tr>
-                <tr>
-                    <td><button type="submit">Upload</button></td>
-                </tr>
-                <tr th:if="${above20searches == 'yes'}">
-                    <td>*For above 20 searches, we recommend having the file sent to your email to avoid timeout</td>
-                </tr>
+        <p>
+            <table class="centerTable">
+                <thead>
+                    <tr><td class="centerText"><h1>Welcome to OMAC</h1></td></tr>
+                    <tr><td class="centerText">the <img class="headerImg" src="/images/OneMapLogo.png"> Caller</td></tr>
+                    <tr><td><i class="fa-solid fa-road centerText" style="width: 100%;"></i></td></tr>
+                </thead>
             </table>
-        </form>
-        <p>Visit the <a th:href="@{help}">Help!</a> page if you require further assistance.</p>
-        <div th:if="${!fileName.empty}">
-            <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${fileName})}">Download</a>
-            <form method="POST" action="/sendemail">
-                <input type="hidden" name="fileName" th:value="${fileName}">
-                <table>
-                    <tr>
-                        <td>Have the file sent to your email:</td>
-                        <td><input type="email" name="toEmail" placeholder="your email" required></td>
-                        <td><button type="submit">Send!</button></td>
-                    </tr>
+        </p>
+        <p>
+            <form>
+                <table class="centerTable">
+                    <tbody>
+                        <tr>
+                            <td class="centerText"><i class="fa-solid fa-angles-left"></i> <a href="/">Home</a></td>
+                        </tr>
+                        <tr>
+                            <td class="centerText"><a href="/help">FAQ</a> <i class="fa-solid fa-question"></i></td>
+                        </tr>
+                    </tbody>
                 </table>
             </form>
-        </div>    
-        <form method="POST" action="/quicksearch">
-            <table border="1">
+        </p>
+        <form method="POST" action="/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
+            <table class="centerTable">
                 <tr>
-                    <td>Quick search:</td>
-                    <td><input type="text" placeholder="type here" name="searchValue" th:value="${searchValue}"></td>
-                    <td>
-                        <input type="radio" name="searchBy" value="address" id="address">
-                        <label for="address">Address</label>
-                        <input type="radio" name="searchBy" value="postalcode" id="postalcode">
-                        <label for="postalcode">Postal Code</label>
+                    <td class="centerTextUnderline">#1 Choose a .csv file</td>
+                </tr>
+                <tr>
+                    <td><input type="file" class="form-control form-control-sm" name="csv-file" id="csv-file" 
+                        accept=".csv" required>
                     </td>
-                    <td><button type="submit">Search</button></td>
+                </tr>
+                <tr>
+                    <td class="centerTextUnderline spaceAbove">#2 Upload it</td>
+                </tr>
+                <tr>
+                    <td><button type="submit" id="fileUploadBtn" 
+                        class="btn btn-secondary btn-sm centerContentWithinCell">Upload
+                    </button></td>
+                </tr>
+                <tr th:if="${above20searches == 'yes'}">
+                    <td class="centerTextUnderline spaceAbove">*#2.1 Send to your email</td>
+                </tr>
+                <tr th:if="${above20searches == 'yes'}">
+                    <td><input type="email" class="centerContentWithinCell" name="toEmail" placeholder="email"></td>
                 </tr>
             </table>
-            <br>
-            <div th:if="${!searchValue.empty}">
-                Search results for '<span th:text="${searchValue}"></span>', '<span th:text="${noOfResults}"></span>' results found, searched by '<span th:text="${searchBy}"></span>'
+            <div th:if="${above20searches == 'yes'}" class="centerText">
+                *For above 20 searches, we recommend having the file sent to your email instead to avoid request timeout
             </div>
+        </form>
+        <br>
+        <p class="centerText underlineText">Visit the <a th:href="@{help}">FAQ</a> section if you need help.</p>
+        <hr class="dashed">
+        <p class="centerText fontSizeXLarge">Quick Search:</p>
+        <form method="POST" action="/quicksearch">
+            <table class="centerTable">
+                <tbody>
+                    <tr>
+                        <td><input type="text" id="quickSearchVal" placeholder="searches" name="searchValue"></td>
+                        <td>
+                            <select name="searchBy" class="form-select form-select-sm">
+                                <option selected value="address">Address</option>
+                                <option value="postalcode">Postal Code</option>
+                            </select>
+                        </td>
+                        <td><button type="submit" id="quickSearchBtn" class="btn btn-secondary btn-sm">Search</button></td>
+                    </tr>
+                </tbody>
+            </table>
             <br>
-            <table border="1" th:if="${!resultList.empty}">
-                <input type="hidden" name="searchValue" th:value="${searchValue}">
+            <div class="text-muted" th:if="${!searchValue.empty}">
+                Search results for '<u><span th:text="${searchValue}"></span></u>',
+                 '<u><span th:text="${noOfResults}"></span></u>' results found,
+                 searched by '<u><span th:text="${searchBy}"></span></u>'
+            </div>
+            <table border="1" th:if="${!resultList.empty}" class="table table-dark table-striped">
+                <input type="hidden" name="currSearchValue" th:value="${searchValue}">
                 <input type="hidden" name="searchBy" th:value="${searchBy}">
-                <tr>
-                    <td>S_NO.</td>
-                    <td>BLK_NO</td>
-                    <td>ROADNAME</td>
-                    <td>BUILDING</td>
-                    <td>FULL_ADDRESS</td>
-                    <td>POSTAL_CODE</td>
-                </tr>
-                <tr th:each="a : ${resultList}">
-                    <td th:text="${aStat.count} + 10 * (${page} - 1)"></td>
-                    <td th:text="${a.blkNo}"></td>
-                    <td th:text="${a.roadName}"></td>
-                    <td th:text="${a.building}"></td>
-                    <td th:text="${a.fullAddress}"></td>
-                    <td th:text="${a.postalCode}"></td>
-                </tr>
-                <tr th:if="${noOfResults}/10 > 1">
-                    <td th:if="${page} > 1">
-                        <button type="submit" name="page" th:value="${page} - 1">Prev</button>
-                    </td>
-                    <td th:if="${page} == 1" colspan="5"></td>
-                    <td th:if="${page} != 1" colspan="4"></td>
-                    <td th:if="${page} < (${noOfResults} / 10)"><button type="submit" name="page" th:value="${page} + 1">Next</button></td>
-                </tr>
+                <thead class="table-dark">
+                    <tr class="centerText">
+                        <th scope="col">#</th>
+                        <th scope="col">Block No.</th>
+                        <th scope="col">Roadname</th>
+                        <th scope="col">Building</th>
+                        <th scope="col">Full Address</th>
+                        <th scope="col">Postal Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="a : ${resultList}" class="centerText">
+                        <th scope="row"  th:text="${aStat.count} + 10 * (${page} - 1)"></th>
+                        <td th:text="${a.blkNo}"></td>
+                        <td th:text="${a.roadName}"></td>
+                        <td th:text="${a.building}"></td>
+                        <td th:text="${a.fullAddress}"></td>
+                        <td th:text="${a.postalCode}"></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr th:if="${noOfResults}/10 > 1">
+                        <td th:if="${page} > 1">
+                            <button type="submit" class="btn btn-light centerContentWithinCell" name="page" th:value="${page} - 1">
+                                <i class="fa-solid fa-arrow-left-long"></i>
+                            </button>
+                        </td>
+                        <td th:if="${page} == 1 or ${page} == ${totalPage}" colspan="5"></td>
+                        <td th:if="${page} != 1 and ${page} != ${totalPage}" colspan="4"></td>
+                        <td th:if="${page} < (${noOfResults} / 10)">
+                            <button type="submit" class="btn btn-light centerContentWithinCell" name="page" th:value="${page} + 1">
+                                <i class="fa-solid fa-arrow-right-long"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
         </form>
         <form method="POST" action="/downloadsearchresults" th:if="${!resultList.empty}">
-            <table>
+            <input type="hidden" name="searchValue" th:value="${searchValue}">
+            <input type="hidden" name="searchBy" th:value="${searchBy}">      
+            <table class="centerTable">
               <tr>
                   <td>
-                      <button type="submit">Request</button> a download of the searched results.
-                      <input type="hidden" name="searchValue" th:value="${searchValue}">
-                      <input type="hidden" name="searchBy" th:value="${searchBy}">      
+                      Request a <button type="submit" class="btn btn-secondary btn-sm">download</button> of the searched results.
                   </td>
               </tr>  
             </table>
         </form>
     </body>
+    <script src="/js/index.js"></script>
 </html>

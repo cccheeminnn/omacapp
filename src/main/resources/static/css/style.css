@@ -1,0 +1,40 @@
+.centerTable {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.centerText {
+    text-align: center;
+}
+
+.underlineText {
+    text-decoration: underline;
+}
+.centerTextUnderline {
+    text-align: center;
+    text-decoration: underline;
+    font-size: large;
+}
+
+.fontSizeXLarge {
+    font-weight: bold;
+    font-size: x-large;
+}
+
+.spaceAbove {
+    padding-top: 1em;
+}
+
+.centerContentWithinCell {
+    margin:auto;
+    display:block;
+}
+
+.headerImg {
+    width: 10%;
+    height: auto;
+}
+
+hr.dashed {
+    border-top: 5px dashed #bbb;
+}

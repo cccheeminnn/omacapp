@@ -42,12 +42,12 @@ public class AppController {
         ModelAndView mvc = new ModelAndView("index");
 
         mvc.addObject("above20searches", "");
-        mvc.addObject("fileName", "");
         mvc.addObject("resultList", Collections.emptyList());
         mvc.addObject("searchValue", "");
         mvc.addObject("searchBy", "");
         mvc.addObject("noOfResults", "");
         mvc.addObject("page", 1);
+        mvc.addObject("totalPage", "");
         return mvc;
     }
 
@@ -96,12 +96,12 @@ public class AppController {
                 } else if (searchValSet.size() >= 20 && null == toEmail) {
                     //if there is more than 20 queries to be made, better to have file sent to email instead
                     mvc.addObject("above20searches", "yes");
-                    mvc.addObject("fileName", "");
                     mvc.addObject("resultList", Collections.emptyList());
                     mvc.addObject("searchValue", "");
                     mvc.addObject("searchBy", "");
                     mvc.addObject("noOfResults", "");
                     mvc.addObject("page", 1);
+                    mvc.addObject("totalPage", "");
                     mvc.setViewName("index");
                     return mvc;
                 } else if (searchValSet.size() >= 20 && null != toEmail) {
@@ -134,20 +134,30 @@ public class AppController {
         }
         Integer offset = 0 + 10 * (pageInt - 1);
         
+        String searchTerm = "";
+        if (!formData.getFirst("searchValue").isBlank()) {
+            searchTerm = formData.getFirst("searchValue");
+        } else if (formData.getFirst("searchValue").isBlank() && 
+            !formData.getFirst("currSearchValue").isBlank()) 
+        {
+            searchTerm = formData.getFirst("currSearchValue");
+        }
+
         String searchBy = formData.getFirst("searchBy");
-        String searchTerm = formData.getFirst("searchValue");
+        System.out.println(searchTerm);
         String searchTermForSQL = "%" + searchTerm + "%";
             
         List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset, searchBy);
         Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL, searchBy);
-
+        int totalPage = (int)Math.ceil(noOfResults/10.0);
+        System.out.println(totalPage);
         mvc.addObject("above20searches", "");
-        mvc.addObject("fileName", "");
         mvc.addObject("resultList", addResultsList);
         mvc.addObject("searchValue", searchTerm);
         mvc.addObject("searchBy", searchBy);
         mvc.addObject("noOfResults", noOfResults);
         mvc.addObject("page", pageInt);
+        mvc.addObject("totalPage", totalPage);
         mvc.setViewName("index");
 
         return mvc;
