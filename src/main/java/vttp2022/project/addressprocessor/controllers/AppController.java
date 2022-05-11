@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,8 +37,18 @@ public class AppController {
 
     @Autowired private EmailService emailSvc;
 
+    @GetMapping(path="/login")
+    public ModelAndView getLogin() {
+        return new ModelAndView("login");
+    }
+
+    @GetMapping(path="/register")
+    public ModelAndView getRegister() {
+        return new ModelAndView("register");
+    }
+
     @GetMapping(path={""})
-    public ModelAndView getIndex() 
+    public ModelAndView getIndex(HttpSession httpSesh) 
     {       
         ModelAndView mvc = new ModelAndView("index");
 

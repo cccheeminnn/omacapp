@@ -15,3 +15,25 @@ create table addresses (
 
     primary key (S_NO)
 );
+
+create table users (
+	email varchar(32) not null,
+    password varchar(256) not null,
+
+    primary key (email)
+);
+
+insert into users (email, password)
+	values ('omacapp@outlook.com', sha1(12345));
+    
+create table files (
+	email varchar(32),
+    filename varchar(8) not null,
+
+    primary key (filename),
+    
+	constraint fk_email
+        foreign key(email) 
+        references users(email) 
+        on delete cascade
+);
