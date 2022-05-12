@@ -37,6 +37,9 @@
                         <tr>
                             <td class="centerText"><a href="/help">FAQ</a> <i class="fa-solid fa-question"></i></td>
                         </tr>
+                        <tr>
+                            <td class="centerText"><i class="fa-solid fa-user"></i> <a href="/user/profile">Profile</a></td>
+                        </tr>
                     </tbody>
                 </table>
             </form>
@@ -52,13 +55,15 @@
                 </td></tr>
             </tbody>
         </table>
-        <form method="POST" action="/sendemail">
+        <form method="POST" action="/user/sendemail">
             <input type="hidden" name="fileName" th:value="${fileName}">
             <table class="centerTable">
                 <tr>
-                    <td class="centerText spaceAbove">or have the file sent to your email:</td>
-                    <td class="centerText spaceAbove"><input type="email" name="toEmail" placeholder="email" required></td>
-                    <td class="centerText spaceAbove"><button type="submit" class="btn btn-secondary btn-sm">Send!</button></td>
+                    <td class="centerText spaceAbove">or have the file sent to your email at <span class="centerText underlineAndBoldText" th:text="${userEmail}"></span>  </td>
+                    <input type="hidden" name="toEmail" th:value="${userEmail}">
+                </tr>
+                <tr>
+                    <td colspan="2" class="centerText spaceAbove"><button type="submit" class="btn btn-secondary btn-sm">Send</button></td>
                 </tr>
             </table>
         </form>

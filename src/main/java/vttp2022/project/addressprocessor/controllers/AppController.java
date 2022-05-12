@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
@@ -21,15 +23,21 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import vttp2022.project.addressprocessor.Utils.ReadCsvUtil;
+import vttp2022.project.addressprocessor.exceptions.UserAlreadyExistException;
 import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
+import vttp2022.project.addressprocessor.models.File;
 import vttp2022.project.addressprocessor.services.AppService;
 import vttp2022.project.addressprocessor.services.DigitalOceanService;
 import vttp2022.project.addressprocessor.services.EmailService;
+import vttp2022.project.addressprocessor.services.UserService;
 
 @Controller
 @RequestMapping(path="")
 public class AppController {
+    
+    private static final Logger logger 
+        = LoggerFactory.getLogger(AppController.class);
 
     @Autowired private AppService appSvc;
     
@@ -37,9 +45,48 @@ public class AppController {
 
     @Autowired private EmailService emailSvc;
 
-    @GetMapping(path="/login")
-    public ModelAndView getLogin() {
-        return new ModelAndView("login");
+    @Autowired private UserService userSvc;
+
+    @GetMapping(path={"", "/login"})
+    public ModelAndView getIndex(HttpSession httpSesh) 
+    {
+        logger.info("httpSesh username: " + httpSesh.getAttribute("username"));      
+
+        ModelAndView mvc = new ModelAndView();
+        if (null == httpSesh.getAttribute("username")) {
+            mvc.addObject("register", "");
+            mvc.setViewName("login");
+            return mvc;
+        } else {
+            mvc.addObject("above20searches", "");
+            mvc.addObject("userEmail", "");
+            mvc.addObject("resultList", Collections.emptyList());
+            mvc.addObject("searchValue", "");
+            mvc.addObject("searchBy", "");
+            mvc.addObject("noOfResults", "");
+            mvc.addObject("page", 1);
+            mvc.addObject("totalPage", "");
+            mvc.setViewName("index");
+            return mvc;
+        }
+    }
+    
+    @GetMapping(path="/user/profile")
+    public ModelAndView getProfile(HttpSession httpSesh) {
+        ModelAndView mvc = new ModelAndView();
+        String email = (String)httpSesh.getAttribute("username");
+
+        List<File> userFileList = userSvc.retrieveUserFiles(email);
+        mvc.addObject("username", email);
+        mvc.addObject("userfilelist", userFileList);
+        mvc.setViewName("profile");
+        return mvc;
+    }
+
+    @GetMapping(path="/user/logout")
+    public ModelAndView getLogout(HttpSession httpSesh) {
+        httpSesh.invalidate();
+        return new ModelAndView("redirect:/");
     }
 
     @GetMapping(path="/register")
@@ -47,31 +94,65 @@ public class AppController {
         return new ModelAndView("register");
     }
 
-    @GetMapping(path={""})
-    public ModelAndView getIndex(HttpSession httpSesh) 
-    {       
-        ModelAndView mvc = new ModelAndView("index");
-
-        mvc.addObject("above20searches", "");
-        mvc.addObject("resultList", Collections.emptyList());
-        mvc.addObject("searchValue", "");
-        mvc.addObject("searchBy", "");
-        mvc.addObject("noOfResults", "");
-        mvc.addObject("page", 1);
-        mvc.addObject("totalPage", "");
-        return mvc;
-    }
-
     @GetMapping(path="/help")
-    public ModelAndView getHelp() 
-    {
+    public ModelAndView getHelp() {
         return new ModelAndView("help");
     }
 
+    //after pressing login
+    @PostMapping(path="/login")
+    public ModelAndView postLogin(HttpSession httpsesh, @RequestBody MultiValueMap<String, String> formData) {
+        ModelAndView mvc = new ModelAndView();
+        String email = formData.getFirst("loginEmail");
+        String password = formData.getFirst("loginPassword");
+        boolean loginSuccess = userSvc.validateLogin(email, password);
+
+        if (loginSuccess) {
+            httpsesh.setAttribute("username", email);
+            mvc.addObject("above20searches", "");
+            mvc.addObject("resultList", Collections.emptyList());
+            mvc.addObject("searchValue", "");
+            mvc.addObject("searchBy", "");
+            mvc.addObject("noOfResults", "");
+            mvc.addObject("page", 1);
+            mvc.addObject("totalPage", "");
+            mvc.setViewName("redirect:/");
+            return mvc;
+        } else {
+            mvc.addObject("message", "loginerror");
+            mvc.setViewName("error");
+            return mvc;
+        }
+    }
+
+    @PostMapping(path="/register")
+    public ModelAndView postRegister(@RequestBody MultiValueMap<String, String> formData) {
+        ModelAndView mvc = new ModelAndView();
+
+        String email = formData.getFirst("loginEmail");
+        String password = formData.getFirst("loginPassword");
+        try {
+            boolean registerSuccess = userSvc.registerUser(email, password);
+            if (registerSuccess) {
+                mvc.addObject("register", "success");
+                mvc.setViewName("login");
+                return mvc;
+            } else {
+                mvc.setViewName("error");
+                return mvc;    
+            }
+            
+        } catch (UserAlreadyExistException uaee) {
+            mvc.addObject("message", "useralreadyexist");
+            mvc.setViewName("error");
+            return mvc;
+        }
+    }
+
     //upload queries One Map API
-    @PostMapping(path="/upload")
+    @PostMapping(path="/user/upload")
     public ModelAndView postUpload(@RequestParam("csv-file") MultipartFile file,
-        @RequestPart(required = false) String toEmail) 
+        @RequestPart(required = false) String toEmail, HttpSession httpSesh) 
     {
         ModelAndView mvc = new ModelAndView();
 
@@ -84,6 +165,9 @@ public class AppController {
             mvc.setViewName("error");
             return mvc;
         } else {
+            String email = (String)httpSesh.getAttribute("username");
+            String queryName = file.getOriginalFilename();
+
             try {
                 Set<String> searchValSet = ReadCsvUtil.parseSearchValue(file);
                 if (searchValSet.isEmpty()) {
@@ -100,13 +184,16 @@ public class AppController {
                         mvc.setViewName("error");
                         return mvc;    
                     } else {
+                        userSvc.saveUserFile(email, queryName, fileName);
                         mvc.addObject("fileName", fileName);
+                        mvc.addObject("userEmail", email);
                         mvc.setViewName("download");
                         return mvc;            
                     }
                 } else if (searchValSet.size() >= 20 && null == toEmail) {
                     //if there is more than 20 queries to be made, better to have file sent to email instead
                     mvc.addObject("above20searches", "yes");
+                    mvc.addObject("userEmail", email);
                     mvc.addObject("resultList", Collections.emptyList());
                     mvc.addObject("searchValue", "");
                     mvc.addObject("searchBy", "");
@@ -117,7 +204,8 @@ public class AppController {
                     return mvc;
                 } else if (searchValSet.size() >= 20 && null != toEmail) {
                     //this method is @Async because Heroku has a request timeout of 30s
-                    appSvc.queryOneMapAPIAsync(searchValSet, toEmail);
+                    logger.info("to send results to %s".formatted(toEmail));
+                    appSvc.queryOneMapAPIAsync(searchValSet, toEmail, queryName);
                     mvc.setViewName("email");
                     return mvc;        
                 }
@@ -131,7 +219,7 @@ public class AppController {
     }
 
     //quicksearch queries the database
-    @PostMapping(path="/quicksearch")
+    @PostMapping(path="/user/quicksearch")
     public ModelAndView postPage(@RequestBody MultiValueMap<String, String> formData) {
         ModelAndView mvc = new ModelAndView();
         
@@ -155,14 +243,15 @@ public class AppController {
         }
 
         String searchBy = formData.getFirst("searchBy");
-        System.out.println(searchTerm);
+        logger.info("search term is" + searchTerm);
         String searchTermForSQL = "%" + searchTerm + "%";
             
         List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset, searchBy);
         Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL, searchBy);
         int totalPage = (int)Math.ceil(noOfResults/10.0);
-        System.out.println(totalPage);
+
         mvc.addObject("above20searches", "");
+        mvc.addObject("userEmail", "");
         mvc.addObject("resultList", addResultsList);
         mvc.addObject("searchValue", searchTerm);
         mvc.addObject("searchBy", searchBy);
@@ -174,9 +263,12 @@ public class AppController {
         return mvc;
     }
 
-    @PostMapping(path="/downloadsearchresults")
-    public ModelAndView postDownloadSearchResults(@RequestBody MultiValueMap<String, String> formData) {
+    @PostMapping(path="/user/downloadsearchresults")
+    public ModelAndView postDownloadSearchResults(HttpSession httpSesh,
+        @RequestBody MultiValueMap<String, String> formData) 
+    {   
         ModelAndView mvc = new ModelAndView();
+        String email = (String)httpSesh.getAttribute("username");
 
         String searchBy = formData.getFirst("searchBy");
         String searchTerm = formData.getFirst("searchValue");
@@ -185,7 +277,9 @@ public class AppController {
         List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 150000, 0, searchBy);
         try {
             String filename = doSvc.writeToByteArray(addResultsList);
+            userSvc.saveUserFile(email, searchTerm, filename);
             mvc.addObject("fileName", filename);
+            mvc.addObject("userEmail", email);
             mvc.setViewName("download");
             return mvc;
         } catch (WriteToByteArrayException wtbae) {
@@ -195,7 +289,7 @@ public class AppController {
         }
     }
 
-    @PostMapping(path="/sendemail")
+    @PostMapping(path="/user/sendemail")
     public ModelAndView postSendEmailTest(@RequestBody MultiValueMap<String, String> formData) {
         try {
             emailSvc.sendEmailWithAttachment(formData.getFirst("toEmail"), formData.getFirst("fileName"));
@@ -203,6 +297,26 @@ public class AppController {
             e.printStackTrace();
         }
         return new ModelAndView("email");
+    }
+
+    @PostMapping(path="/user/profile/delete")
+    public ModelAndView postDeleteFile(@RequestBody MultiValueMap<String, String> formData) {
+        ModelAndView mvc = new ModelAndView();
+
+        String fileToDelete = formData.getFirst("fileToDelete");
+        logger.info("fileToDelete: " + fileToDelete);
+
+        //delete from repo if successful then delete in DO
+        boolean repoDelSuccess = userSvc.deleteFile(fileToDelete);
+        if (repoDelSuccess) {
+            doSvc.deleteObjectRequest(fileToDelete);
+            mvc.setViewName("redirect:/user/profile");
+            return mvc;
+        } else {
+            mvc.addObject("deletefailed", "deletefailed");
+            mvc.setViewName("error");
+            return mvc;
+        }
     }
 
 }

@@ -22,17 +22,21 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
-import vttp2022.project.addressprocessor.repositories.OMACRepository;
+import vttp2022.project.addressprocessor.repositories.AddressRepository;
+import vttp2022.project.addressprocessor.repositories.FilesRepository;
 
+//contains all the business logic
 @Service
 public class AppService {
 
-    @Autowired private OMACRepository omacRepo;
+    @Autowired private AddressRepository omacRepo;
 
     @Autowired private DigitalOceanService doSvc;
 
     @Autowired private EmailService emailSvc;
     
+    @Autowired private FilesRepository filesRepo;
+
     private static final String ONE_MAP_URL = "https://developers.onemap.sg/commonapi/search";
     
     //for .csv file upload
@@ -113,7 +117,7 @@ public class AppService {
 
     //used when uploded .csv file has >= 20 searches
     @Async("threadPoolTaskExecutor")
-    public void queryOneMapAPIAsync(Set<String> addressSet, String toEmail) 
+    public void queryOneMapAPIAsync(Set<String> addressSet, String toEmail, String queryName) 
     {
         List<AddressResult> addResultList = new ArrayList<>();
         System.out.println("addList(searchVal) length >> " + addressSet.size());
@@ -181,6 +185,7 @@ public class AppService {
         try {
             String filename = doSvc.writeToByteArray(addResultList);
             emailSvc.sendEmailWithAttachment(toEmail, filename);
+            filesRepo.insertFilenames(toEmail, queryName, filename);
         } catch (WriteToByteArrayException e) {
             e.printStackTrace(); //@Async method failed to write to do spaces
         } catch (MessagingException e) {
@@ -204,4 +209,5 @@ public class AppService {
         return omacRepo.getNumberOfResults(searchTerm, searchBy);
     }
     //end
+
 }

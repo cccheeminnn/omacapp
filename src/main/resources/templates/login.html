@@ -47,10 +47,11 @@
                     <tr><th class="centerText fontSizeXLarge">Login <i class="fa-solid fa-circle-user"></i></th></tr>
                 </thead>
                 <tbody>
+                    <tr th:if="${register} == 'success'"><td class="centerText spaceAbove">Thank you for registering, you can now login.</td></tr>
                     <tr><td class="centerText spaceAbove">Email</td></tr>
-                    <tr><td class="centerText"><input type="email" name="loginemail" placeholder="" required></td></tr>
+                    <tr><td class="centerText"><input type="email" name="loginEmail" placeholder="" required></td></tr>
                     <tr><td class="centerText spaceAbove">Password</td></tr>
-                    <tr><td class="centerText"><input type="password" name="loginpassword" placeholder="" required></td></tr>
+                    <tr><td class="centerText"><input type="password" name="loginPassword" placeholder="" required></td></tr>
                     <tr><td class="centerText spaceAbove"><button type="submit" class="btn btn-secondary btn-sm">Login</button></td></tr>
                     <tr><td class="centerText spaceAbove"><a href="/register">Register</a></td></tr>
                 </tbody>    

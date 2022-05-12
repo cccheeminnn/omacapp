@@ -28,6 +28,7 @@ insert into users (email, password)
     
 create table files (
 	email varchar(32),
+    originalfilename varchar(256) not null,
     filename varchar(8) not null,
 
     primary key (filename),

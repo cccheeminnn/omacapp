@@ -81,6 +81,18 @@
                     <td style="padding: 0px 10px 0px;">DOUploadWentWrong</td>
                     <td style="padding: 0px 10px 0px;">Something went wrong while uploading to DO, please contact the administrator at <b>omacapp@outlook.com</b> with this error message.</td>
                 </tr>
+                <tr th:if="${message} == 'loginerror'">
+                    <td style="padding: 0px 10px 0px;">Login Error</td>
+                    <td style="padding: 0px 10px 0px;">Your username or password is incorrect.</td>
+                </tr>
+                <tr th:if="${message} == 'useralreadyexist'">
+                    <td style="padding: 0px 10px 0px;">UserAlreadyExist</td>
+                    <td style="padding: 0px 10px 0px;">The user already exist, please login instead.</td>
+                </tr>
+                <tr th:if="${message} == 'deletefailed'">
+                    <td style="padding: 0px 10px 0px;">Delete Failed</td>
+                    <td style="padding: 0px 10px 0px;">Attempt to delete file failed, please try again.</td>
+                </tr>
                 <tr>
                 </tr>
             </tbody>

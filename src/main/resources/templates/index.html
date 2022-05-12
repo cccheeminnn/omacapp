@@ -37,11 +37,14 @@
                         <tr>
                             <td class="centerText"><a href="/help">FAQ</a> <i class="fa-solid fa-question"></i></td>
                         </tr>
+                        <tr>
+                            <td class="centerText"><i class="fa-solid fa-user"></i> <a href="/user/profile">Profile</a></td>
+                        </tr>
                     </tbody>
                 </table>
             </form>
         </p>
-        <form method="POST" action="/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
+        <form method="POST" action="/user/upload" enctype="multipart/form-data" accept="application/vnd.ms-excel">
             <table class="centerTable">
                 <tr>
                     <td class="centerTextUnderline">#1 Choose a .csv file</td>
@@ -60,10 +63,12 @@
                     </button></td>
                 </tr>
                 <tr th:if="${above20searches == 'yes'}">
-                    <td class="centerTextUnderline spaceAbove">*#2.1 Send to your email</td>
+                    <td class="centerTextUnderline spaceAbove">*Note: Will be sent to your email</td>
                 </tr>
                 <tr th:if="${above20searches == 'yes'}">
-                    <td><input type="email" class="centerContentWithinCell" name="toEmail" placeholder="email"></td>
+                    <input type="hidden" name="toEmail" th:value="${userEmail}">
+                    <td class="centerText underlineAndBoldText" th:text="${userEmail}">
+                    </td>
                 </tr>
             </table>
             <div th:if="${above20searches == 'yes'}" class="centerText">
@@ -73,7 +78,7 @@
         <br>
         <hr class="dashed">
         <p class="centerText fontSizeXLarge">Quick Search:</p>
-        <form method="POST" action="/quicksearch">
+        <form method="POST" action="/user/quicksearch">
             <table class="centerTable">
                 <tbody>
                     <tr>
@@ -135,7 +140,7 @@
                 </tfoot>
             </table>
         </form>
-        <form method="POST" action="/downloadsearchresults" th:if="${!resultList.empty}">
+        <form method="POST" action="/user/downloadsearchresults" th:if="${!resultList.empty}">
             <input type="hidden" name="searchValue" th:value="${searchValue}">
             <input type="hidden" name="searchBy" th:value="${searchBy}">      
             <table class="centerTable">

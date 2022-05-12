@@ -11,6 +11,7 @@ import java.util.UUID;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.opencsv.CSVWriter;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
 
+//for writing to DO spaces
 @Service
 public class DigitalOceanService {
 
@@ -83,4 +85,16 @@ public class DigitalOceanService {
         }
     }
 
+    public boolean deleteObjectRequest(String fileToDelete) 
+    {
+        try {
+            DeleteObjectRequest delReq = new DeleteObjectRequest(
+                "bigcontainer", 
+                "OMAC/csv/%s.csv".formatted(fileToDelete));
+            s3.deleteObject(delReq);
+            return true;
+        } catch (SdkClientException sce) {
+            return false;
+        }
+    }
 }

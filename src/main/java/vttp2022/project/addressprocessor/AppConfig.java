@@ -21,7 +21,7 @@ public class AppConfig {
         regFilter.setFilter(authFilter);
         //attemps to access these PathVariables goes through the doFilter itself
         //same as "/protected/*"
-        regFilter.addUrlPatterns("/protected/*");
+        regFilter.addUrlPatterns("/user/*");
 
         return regFilter;
     }

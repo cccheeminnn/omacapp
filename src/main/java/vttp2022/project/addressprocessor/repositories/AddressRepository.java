@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Repository
-public class OMACRepository {
+public class AddressRepository {
     
     @Autowired private JdbcTemplate template;
 

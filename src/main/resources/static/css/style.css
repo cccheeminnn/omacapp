@@ -11,6 +11,11 @@
     text-decoration: underline;
 }
 
+.underlineAndBoldText {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
 .centerTextUnderline {
     text-align: center;
     text-decoration: underline;
