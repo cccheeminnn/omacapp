@@ -1,12 +1,13 @@
 package vttp2022.project.addressprocessor.services;
 
 import java.net.MalformedURLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
@@ -26,7 +27,9 @@ public class EmailService {
     public void sendEmailWithAttachment(String toEmail, String fileName) throws MessagingException{
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
-        messageHelper.setSubject("OMAC Query Results " + LocalDate.now() + " " + LocalTime.now());
+        FormatStyle dateTimeStyle = FormatStyle.SHORT;
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(dateTimeStyle);
+        messageHelper.setSubject("OMAC Query Results " + "(" + LocalDateTime.now().format(formatter) + ")");
         messageHelper.setTo(toEmail);
         messageHelper.setText("Thank you for using OMAC, here is your file attached!", true);
         messageHelper.setFrom(from);

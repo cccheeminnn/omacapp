@@ -47,7 +47,7 @@
                     <tr><th class="centerText fontSizeXLarge">Login <i class="fa-solid fa-circle-user"></i></th></tr>
                 </thead>
                 <tbody>
-                    <tr th:if="${register} == 'success'"><td class="centerText spaceAbove">Thank you for registering, you can now login.</td></tr>
+                    <tr th:if="${register} == 'success'"><td class="centerText spaceAbove">Thank you for registering, you may now login.</td></tr>
                     <tr><td class="centerText spaceAbove">Email</td></tr>
                     <tr><td class="centerText"><input type="email" name="loginEmail" placeholder="" required></td></tr>
                     <tr><td class="centerText spaceAbove">Password</td></tr>
@@ -59,4 +59,16 @@
         </form>
     </body>
     <hr class="dotted">
+    <table class="centerTable">
+        <tr>
+            <td class="centerText">
+                <i><small>Admin: omacapp@outlook.com</small></i>
+            </td>
+        </tr>
+        <tr>
+            <td class="centerText">
+                <i><small>Password: 12345</small></i>
+            </td>
+        </tr>
+    </table>
 </html>

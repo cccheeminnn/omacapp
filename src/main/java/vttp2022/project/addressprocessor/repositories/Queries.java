@@ -33,9 +33,18 @@ public interface Queries {
                 from addresses where postal_code like ?
         """;
 
+    public static final String SQL_NUMBER_OF_RESULTS_BY_BUILDING = 
+        """
+            select count(*) as count 
+                from addresses where building like ?
+        """;
+
+
     public static final String SQL_FIND_ADDRESSES_BY_FULL_ADDRESS = "select * from addresses where full_address like ? limit ? offset ?";
 
     public static final String SQL_FIND_ADDRESSES_BY_POSTAL_CODE = "select * from addresses where postal_code like ? limit ? offset ?";
+
+    public static final String SQL_FIND_ADDRESSES_BY_BUILDING = "select * from addresses where building like ? limit ? offset ?";
     //address table end
 
     //end

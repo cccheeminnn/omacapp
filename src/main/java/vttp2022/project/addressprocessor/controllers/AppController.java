@@ -99,6 +99,34 @@ public class AppController {
         return new ModelAndView("help");
     }
 
+    @GetMapping(path="/user/quicksearch")
+    public ModelAndView getQuicksearches(@RequestParam String searchValue, 
+        @RequestParam String searchBy, @RequestParam String page) {
+        logger.info("searchValue: " + searchValue + " searchBy: " + searchBy + " page: " + page);
+        ModelAndView mvc = new ModelAndView();
+            
+        String sqlSearchValue = "%" + searchValue + "%";
+        int pageInt = Integer.parseInt(page);
+        Integer offset = 0 + 10 * (pageInt - 1);
+
+        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(sqlSearchValue, 10, offset, searchBy);
+        logger.info("addResultsList size: " + addResultsList.size());
+        int noOfResults = appSvc.getNumberOfResults(sqlSearchValue, searchBy);
+        int totalPage = (int)Math.ceil(noOfResults/10.0);
+
+        mvc.addObject("above20searches", "");
+        mvc.addObject("userEmail", "");
+        mvc.addObject("resultList", addResultsList);
+        mvc.addObject("searchValue", searchValue);
+        mvc.addObject("searchBy", searchBy);
+        mvc.addObject("noOfResults", noOfResults);
+        mvc.addObject("page", pageInt);
+        mvc.addObject("totalPage", totalPage);
+        mvc.setViewName("index");
+
+        return mvc;
+    }
+
     //after pressing login
     @PostMapping(path="/login")
     public ModelAndView postLogin(HttpSession httpsesh, @RequestBody MultiValueMap<String, String> formData) {
@@ -109,13 +137,6 @@ public class AppController {
 
         if (loginSuccess) {
             httpsesh.setAttribute("username", email);
-            mvc.addObject("above20searches", "");
-            mvc.addObject("resultList", Collections.emptyList());
-            mvc.addObject("searchValue", "");
-            mvc.addObject("searchBy", "");
-            mvc.addObject("noOfResults", "");
-            mvc.addObject("page", 1);
-            mvc.addObject("totalPage", "");
             mvc.setViewName("redirect:/");
             return mvc;
         } else {

@@ -38,7 +38,7 @@
                             <td class="centerText"><a href="/help">FAQ</a> <i class="fa-solid fa-question"></i></td>
                         </tr>
                         <tr>
-                            <td class="centerText"><a href="/user/logout">Logout</a> <i class="fa-solid fa-arrow-right-from-bracket"></i></td>
+                            <td class="centerText"><i class="fa-solid fa-arrow-right-from-bracket"></i> <a href="/user/logout">Logout</a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -61,22 +61,32 @@
                     <th class="centerText" style="padding: 0px 10px 0px;"><u>Uploaded Filename/Searched Terms</u></th>
                     <th class="centerText" style="padding: 0px 10px 0px;"><u>Generated Filename</u></th>
                     <th class="centerText" style="padding: 0px 10px 0px;"><u>Download</u></th>
+                    <th class="centerText" style="padding: 0px 10px 0px;"><u>Email</u></th>
                     <th class="centerText" style="padding: 0px 10px 0px;"><u>Delete</u></th>
                 </tr>
                 <tr>
-                    <th class="centerText" style="padding: 0px 10px 0px;" th:unless="${!userfilelist.empty}" colspan="4">Currently empty</th>
+                    <th class="centerText" style="padding: 0px 10px 0px;" th:unless="${!userfilelist.empty}" colspan="5">EMPTY</th>
                 </tr>
             </thead>
             <tbody th:if="${!userfilelist.empty}">
                 <tr th:each="file : ${userfilelist}">
+                    <td class="centerText" th:text="${file.queryName}"></td>
+                    <td class="centerText" th:text="${file.generatedFileName}"></td>
+                    <td class="centerText">
+                        <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${file.generatedFileName})}">
+                            <i class="fa-solid fa-arrow-down"></i></a>
+                    </td>
+                    <form method="POST" action="/user/sendemail">
+                        <input type="hidden" name="toEmail" th:value="${username}">
+                        <input type="hidden" name="fileName" th:value="${file.generatedFileName}">
+                        <td class="centerText">
+                            <button type="submit" class="btn btn-link">
+                                <i class="fa-solid fa-envelope"></i>
+                            </button>
+                        </td>
+                    </form>
                     <form method="POST" action="/user/profile/delete">
                         <input type="hidden" name="fileToDelete" th:value="${file.generatedFileName}">
-                        <td class="centerText" th:text="${file.queryName}"></td>
-                        <td class="centerText" th:text="${file.generatedFileName}"></td>
-                        <td class="centerText">
-                            <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/{fileName}.csv(fileName=${file.generatedFileName})}">
-                                <i class="fa-solid fa-arrow-down"></i></a>
-                        </td>
                         <td class="centerText">
                             <button type="submit" class="btn btn-link" style="color: red;">
                                 <i class="fa-solid fa-xmark"></i>

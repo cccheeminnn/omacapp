@@ -1,6 +1,8 @@
 package vttp2022.project.addressprocessor.repositories;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -16,6 +18,8 @@ import java.util.List;
 @Repository
 public class AddressRepository {
     
+    Logger logger = LoggerFactory.getLogger(AddressRepository.class);
+
     @Autowired private JdbcTemplate template;
 
     public Integer getNumberOfResults(String searchTerm, String searchBy) {
@@ -27,6 +31,9 @@ public class AddressRepository {
                 break;
             case "postalcode":
                 rs = template.queryForRowSet(SQL_NUMBER_OF_RESULTS_BY_POSTAL_CODE, searchTerm);
+                break;
+            case "building":
+                rs = template.queryForRowSet(SQL_NUMBER_OF_RESULTS_BY_BUILDING, searchTerm);
                 break;
         }
 
@@ -44,12 +51,16 @@ public class AddressRepository {
         SqlRowSet rs = null;
         switch (searchBy) {
             case "address":
-                System.out.println("CASE: ADDRESS");
+                logger.info("searchBy CASE: ADDRESS");
                 rs = template.queryForRowSet(SQL_FIND_ADDRESSES_BY_FULL_ADDRESS, searchTerm, limit, offset);
                 break;
             case "postalcode":
-                System.out.println("CASE: POSTAL");
+                logger.info("searchBy CASE: POSTAL");
                 rs = template.queryForRowSet(SQL_FIND_ADDRESSES_BY_POSTAL_CODE, searchTerm, limit, offset);
+                break;
+            case "building":
+                logger.info("searchBy CASE: BUILDING");
+                rs = template.queryForRowSet(SQL_FIND_ADDRESSES_BY_BUILDING, searchTerm, limit, offset);
                 break;
         }
 

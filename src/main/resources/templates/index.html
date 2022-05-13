@@ -78,7 +78,7 @@
         <br>
         <hr class="dashed">
         <p class="centerText fontSizeXLarge">Quick Search:</p>
-        <form method="POST" action="/user/quicksearch">
+        <form method="GET" action="/user/quicksearch">
             <table class="centerTable">
                 <tbody>
                     <tr>
@@ -87,21 +87,25 @@
                             <select name="searchBy" class="form-select form-select-sm">
                                 <option selected value="address">Address</option>
                                 <option value="postalcode">Postal Code</option>
+                                <option value="building">Building</option>
                             </select>
                         </td>
                         <td><button type="submit" id="quickSearchBtn" class="btn btn-secondary btn-sm">Search</button></td>
                     </tr>
                 </tbody>
             </table>
+            <input type="hidden" name="page" value="1">
             <br>
             <div class="text-muted" th:if="${!searchValue.empty}">
                 Search results for '<u><span th:text="${searchValue}"></span></u>',
                  '<u><span th:text="${noOfResults}"></span></u>' results found,
                  searched by '<u><span th:text="${searchBy}"></span></u>'
             </div>
+        </form>
+        <form method="GET" action="/user/quicksearch">
+            <input type="hidden" name="searchValue" th:value="${searchValue}">
+            <input type="hidden" name="searchBy" th:value="${searchBy}">
             <table border="1" th:if="${!resultList.empty}" class="table table-dark table-striped">
-                <input type="hidden" name="currSearchValue" th:value="${searchValue}">
-                <input type="hidden" name="searchBy" th:value="${searchBy}">
                 <thead class="table-dark">
                     <tr class="centerText">
                         <th scope="col">#</th>
