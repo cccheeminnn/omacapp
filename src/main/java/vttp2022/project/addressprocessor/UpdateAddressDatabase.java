@@ -39,12 +39,13 @@ public final class UpdateAddressDatabase {
 
         try {
             BufferedReader buffReader = new BufferedReader(new FileReader(path));
-            String line;
+            String line = "";
             Set<String> stringSet = new HashSet<>();
             //skip the column header
             buffReader.readLine();
             while ((line = buffReader.readLine()) != null) {
                 stringSet.add(line);
+                System.out.println("road>> " + line + " set size>> " + stringSet.size());
             }
             buffReader.close();
 
@@ -112,7 +113,7 @@ public final class UpdateAddressDatabase {
             }
 
             JdbcTemplate template = new JdbcTemplate();
-
+            System.out.println("line after JdbcTemplate iniation");
             template.setDataSource(
                 DataSourceBuilder.create()
                     .url(System.getenv("SPRING_DATASOURCE_URL"))
