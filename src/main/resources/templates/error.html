@@ -60,6 +60,10 @@
                 </tr>
             </thead>
             <tbody>
+                <tr th:if="${message} != ''">
+                    <td style="padding: 0px 10px 0px;">Generic Exception</td>
+                    <td style="padding: 0px 10px 0px;">If you are encountering this error frequently, please remove cookies/cache and try logging in again.</td>
+                </tr>
                 <tr th:if="${message} == 'ioe'">
                     <td style="padding: 0px 10px 0px;">IOException</td>
                     <td style="padding: 0px 10px 0px;">A IOException has occurred, please try uploading the .csv file again.</td>
