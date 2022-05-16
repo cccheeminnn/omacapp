@@ -1,4 +1,4 @@
-package vttp2022.project.addressprocessor.Utils;
+package vttp2022.project.addressprocessor.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

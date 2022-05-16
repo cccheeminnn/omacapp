@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import vttp2022.project.addressprocessor.exceptions.UserAlreadyExistException;
 import vttp2022.project.addressprocessor.models.File;
@@ -17,6 +18,8 @@ public class UserService {
     @Autowired private UsersRepository usersRepo;
 
     @Autowired private FilesRepository filesRepo;
+
+    @Autowired private DigitalOceanService doSvc;
 
     //user login authentications
     
@@ -44,8 +47,17 @@ public class UserService {
         return filesRepo.retrieveFilenames(email);
     }
 
+    @Transactional
     public boolean deleteFile(String fileToDelete) {
-        return filesRepo.deleteFile(fileToDelete);
+        //delete row from table first
+        boolean deleteFromRepo = filesRepo.deleteFileFromTable(fileToDelete);
+        //then delete from DO spaces, this method throws RunTimeException if fails
+        boolean deleteFromSpaces = doSvc.deleteObjectRequest(fileToDelete);
+
+        if (deleteFromRepo && deleteFromSpaces)
+            return true;
+
+        return false;
     }
     
     //end user file methods

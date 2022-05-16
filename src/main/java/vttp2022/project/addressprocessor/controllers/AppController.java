@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import vttp2022.project.addressprocessor.Utils.ReadCsvUtil;
 import vttp2022.project.addressprocessor.exceptions.UserAlreadyExistException;
 import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
@@ -31,6 +30,7 @@ import vttp2022.project.addressprocessor.services.AppService;
 import vttp2022.project.addressprocessor.services.DigitalOceanService;
 import vttp2022.project.addressprocessor.services.EmailService;
 import vttp2022.project.addressprocessor.services.UserService;
+import vttp2022.project.addressprocessor.utils.ReadCsvUtil;
 
 @Controller
 @RequestMapping(path="")
@@ -327,10 +327,9 @@ public class AppController {
         String fileToDelete = formData.getFirst("fileToDelete");
         logger.info("fileToDelete: " + fileToDelete);
 
-        //delete from repo if successful then delete in DO
+        //deleteFile method delete from table then delete file from DO spaces
         boolean repoDelSuccess = userSvc.deleteFile(fileToDelete);
         if (repoDelSuccess) {
-            doSvc.deleteObjectRequest(fileToDelete);
             mvc.setViewName("redirect:/user/profile");
             return mvc;
         } else {

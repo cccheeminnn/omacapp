@@ -94,7 +94,8 @@ public class DigitalOceanService {
             s3.deleteObject(delReq);
             return true;
         } catch (SdkClientException sce) {
-            return false;
+            //delete from Repo then delete from spaces, if spaces fail then repo deletion should rollback
+            throw new RuntimeException("delete obj on DO spaces failed");
         }
     }
 }

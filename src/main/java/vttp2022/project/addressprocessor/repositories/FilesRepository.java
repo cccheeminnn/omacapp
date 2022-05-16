@@ -35,7 +35,7 @@ public class FilesRepository {
         return 1 == count;
     }
 
-    public boolean deleteFile(String fileToDelete) {
+    public boolean deleteFileFromTable(String fileToDelete) {
         int count = template.update(SQL_FILES_DELETE, fileToDelete);
         return 1 == count;
     }
