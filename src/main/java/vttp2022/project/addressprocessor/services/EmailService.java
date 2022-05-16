@@ -24,7 +24,7 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String from;
     
-    public void sendEmailWithAttachment(String toEmail, String fileName) throws MessagingException{
+    public void sendEmailWithAttachment(String toEmail, String fileName) throws MessagingException, MalformedURLException{
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
         FormatStyle dateTimeStyle = FormatStyle.SHORT;
@@ -40,7 +40,7 @@ public class EmailService {
                 new UrlResource("https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/csv/" + fileName + ".csv")
             );
         } catch (MalformedURLException murle) {
-            murle.printStackTrace();
+            throw murle;
         }
         
         mailSender.send(mimeMessage);

@@ -1,6 +1,7 @@
 package vttp2022.project.addressprocessor.controllers;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -316,6 +317,8 @@ public class AppController {
             emailSvc.sendEmailWithAttachment(formData.getFirst("toEmail"), formData.getFirst("fileName"));
         } catch (MessagingException e) {
             e.printStackTrace();
+        } catch (MalformedURLException murle) {
+            murle.printStackTrace();
         }
         return new ModelAndView("email");
     }

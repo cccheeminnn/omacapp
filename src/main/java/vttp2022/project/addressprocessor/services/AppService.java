@@ -1,6 +1,7 @@
 package vttp2022.project.addressprocessor.services;
 
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -190,6 +191,8 @@ public class AppService {
             e.printStackTrace(); //@Async method failed to write to do spaces
         } catch (MessagingException e) {
             e.printStackTrace(); //@Async method failed to send email out
+        } catch (MalformedURLException murle) {
+            murle.printStackTrace(); //@Async method URL to file gone wrong
         }
     }
     //end
