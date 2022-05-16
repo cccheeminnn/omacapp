@@ -18,15 +18,13 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    # - name: Setup Maven
-    #   uses: stCarolas/setup-maven@v4.3
-    #   with:
-    #     maven-version: '3.8.4'
+    - name: Setup Maven
+      uses: stCarolas/setup-maven@v4.3
+      with:
+        maven-version: '3.8.4'
 
-    - name: Build with Maven
-      run: mvn -B test
-    # - name: Run test
-    #   run: mvn test
+    - name: Run test
+      run: mvn clean verify
 
     - name: Generate Jacoco badge
       uses: cicirello/jacoco-badge-generator@v2
