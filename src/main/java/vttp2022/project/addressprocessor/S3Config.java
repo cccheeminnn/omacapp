@@ -1,4 +1,4 @@
-package vttp2022.project.addressprocessor.configs;
+package vttp2022.project.addressprocessor;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

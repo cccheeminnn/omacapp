@@ -1,4 +1,4 @@
-package vttp2022.project.addressprocessor.configs;
+package vttp2022.project.addressprocessor;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
