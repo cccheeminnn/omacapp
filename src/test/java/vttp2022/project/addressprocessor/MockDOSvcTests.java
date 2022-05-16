@@ -9,14 +9,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.test.context.ContextConfiguration;
 
 import vttp2022.project.addressprocessor.services.DigitalOceanService;
 import vttp2022.project.addressprocessor.services.UserService;
 
 //test transactional method
-@SpringBootTest
-@ContextConfiguration(classes = AddressprocessorApplication.class)
+@SpringBootTest(classes = AddressprocessorApplication.class)
 public class MockDOSvcTests {
     
     @Autowired private UserService userSvc;

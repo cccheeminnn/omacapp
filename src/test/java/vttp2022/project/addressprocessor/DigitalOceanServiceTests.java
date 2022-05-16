@@ -15,16 +15,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.MailSendException;
-import org.springframework.test.context.ContextConfiguration;
 
 import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
 import vttp2022.project.addressprocessor.services.DigitalOceanService;
 import vttp2022.project.addressprocessor.services.EmailService;
 
-@SpringBootTest
+@SpringBootTest(classes = AddressprocessorApplication.class)
 @TestInstance(Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = AddressprocessorApplication.class)
 public class DigitalOceanServiceTests {
 	
 	Logger logger = LoggerFactory.getLogger(DigitalOceanServiceTests.class);
