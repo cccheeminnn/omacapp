@@ -1,5 +1,5 @@
 # push to github, test code and push badge to repo front page
-name: Checkout, setup Java and Maven
+name: Running tests...
 
 on:
   push:
