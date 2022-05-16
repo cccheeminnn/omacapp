@@ -23,7 +23,7 @@ import vttp2022.project.addressprocessor.services.EmailService;
 
 @SpringBootTest(classes = AddressprocessorApplication.class)
 @TestInstance(Lifecycle.PER_CLASS)
-public class DigitalOceanServiceTests {
+class DigitalOceanServiceTests {
 	
 	Logger logger = LoggerFactory.getLogger(DigitalOceanServiceTests.class);
 

@@ -15,7 +15,7 @@ import vttp2022.project.addressprocessor.services.UserService;
 
 //test transactional method
 @SpringBootTest(classes = AddressprocessorApplication.class)
-public class MockDOSvcTests {
+class MockDOSvcTests {
     
     @Autowired private UserService userSvc;
 
