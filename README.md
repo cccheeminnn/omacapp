@@ -4,6 +4,6 @@
 
 [![Deployment to Heroku](https://github.com/cccheeminnn/omacapp/actions/workflows/pipeline2.yaml/badge.svg)](https://github.com/cccheeminnn/omacapp/actions/workflows/pipeline2.yaml)
 
-Test not done yet so no Jacoco coverage badge :(
-<!-- ![Coverage](test not done yet :() -->
+![Coverage](https://bigcontainer.sgp1.digitaloceanspaces.com/coverage/omacapp/jacoco.svg)
+
 https://omacapp.herokuapp.com/
