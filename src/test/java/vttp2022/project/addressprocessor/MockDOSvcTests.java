@@ -3,21 +3,18 @@ package vttp2022.project.addressprocessor;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import vttp2022.project.addressprocessor.services.DigitalOceanService;
 import vttp2022.project.addressprocessor.services.UserService;
 
 //test transactional method
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = AddressprocessorApplication.class)
+@SpringBootTest
 class MockDOSvcTests {
     
     @Autowired private UserService userSvc;

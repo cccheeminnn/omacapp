@@ -10,21 +10,18 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.MailSendException;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import vttp2022.project.addressprocessor.exceptions.WriteToByteArrayException;
 import vttp2022.project.addressprocessor.models.AddressResult;
 import vttp2022.project.addressprocessor.services.DigitalOceanService;
 import vttp2022.project.addressprocessor.services.EmailService;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = AddressprocessorApplication.class)
+@SpringBootTest
 @TestInstance(Lifecycle.PER_CLASS)
 class DigitalOceanServiceTests {
 	

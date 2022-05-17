@@ -24,6 +24,14 @@ jobs:
         maven-version: '3.8.4'
 
     - name: Run test
+      env:
+        S3_SECRET_KEY: ${{secrets.S3_SECRET_KEY}}
+        S3_ACCESS_KEY: ${{secrets.S3_ACCESS_KEY}}
+        SPRING_DATASOURCE_URL: ${{secrets.SPRING_DATASOURCE_URL}}
+        SPRING_DATASOURCE_USERNAME: ${{secrets.SPRING_DATASOURCE_USERNAME}}
+        SPRING_DATASOURCE_PASSWORD: ${{secrets.SPRING_DATASOURCE_PASSWORD}}
+        SPRING_MAIL_USERNAME: ${{secrets.SPRING_MAIL_USERNAME}}
+        SPRING_MAIL_PASSWORD: ${{secrets.SPRING_MAIL_PASSWORD}}
       run: mvn clean verify
 
     - name: Generate Jacoco badge
