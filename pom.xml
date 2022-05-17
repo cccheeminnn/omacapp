@@ -100,6 +100,12 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
+				<configuration>
+					<excludes>
+						<!--excluding this class because this is ran manually to update db-->
+						<exclude>vttp2022/project/**/UpdateAddressDatabase.class</exclude>
+					</excludes>
+				</configuration>
                 <executions>
                     <execution>
                         <goals>

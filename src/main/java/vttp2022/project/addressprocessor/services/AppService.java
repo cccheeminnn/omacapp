@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Future;
 
 import javax.mail.MessagingException;
 
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -118,7 +120,7 @@ public class AppService {
 
     //used when uploded .csv file has >= 20 searches
     @Async("threadPoolTaskExecutor")
-    public void queryOneMapAPIAsync(Set<String> addressSet, String toEmail, String queryName) 
+    public Future<String> queryOneMapAPIAsync(Set<String> addressSet, String toEmail, String queryName) 
     {
         List<AddressResult> addResultList = new ArrayList<>();
         System.out.println("addList(searchVal) length >> " + addressSet.size());
@@ -183,8 +185,9 @@ public class AppService {
         }
 
         //once the query completes and all results are parse into a List<AddressResult>
+        String filename = "";
         try {
-            String filename = doSvc.writeToByteArray(addResultList);
+            filename = doSvc.writeToByteArray(addResultList);
             emailSvc.sendEmailWithAttachment(toEmail, filename);
             filesRepo.insertFilenames(toEmail, queryName, filename);
         } catch (WriteToByteArrayException e) {
@@ -194,6 +197,8 @@ public class AppService {
         } catch (MalformedURLException murle) {
             murle.printStackTrace(); //@Async method URL to file gone wrong
         }
+        
+        return AsyncResult.forValue(filename);
     }
     //end
 

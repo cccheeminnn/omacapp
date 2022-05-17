@@ -48,7 +48,7 @@ public class AppController {
 
     @Autowired private UserService userSvc;
 
-    @GetMapping(path={"", "/login"})
+    @GetMapping(path={"/", "/login"})
     public ModelAndView getIndex(HttpSession httpSesh) 
     {
         logger.info("httpSesh username: " + httpSesh.getAttribute("username"));      
