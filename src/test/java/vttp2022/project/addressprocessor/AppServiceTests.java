@@ -49,6 +49,10 @@ class AppServiceTests {
     }
 
     @Test
+    void contextLoads() {
+    }
+
+    @Test
     void shouldReturnAFileName () {
         filename = appSvc.queryOneMapAPI(addressQueryString);
         logger.info("AppServiceTests shouldReturnAFileName filename is : " + filename);

@@ -155,6 +155,7 @@ public class AppController {
         String password = formData.getFirst("loginPassword");
         try {
             boolean registerSuccess = userSvc.registerUser(email, password);
+            System.out.println("registerSuccess>>>>>" + registerSuccess);
             if (registerSuccess) {
                 mvc.addObject("register", "success");
                 mvc.setViewName("login");
@@ -241,49 +242,49 @@ public class AppController {
     }
 
     //quicksearch queries the database
-    @PostMapping(path="/user/quicksearch")
-    public ModelAndView postPage(@RequestBody MultiValueMap<String, String> formData) {
-        ModelAndView mvc = new ModelAndView();
+    // @PostMapping(path="/user/quicksearch")
+    // public ModelAndView postPage(@RequestBody MultiValueMap<String, String> formData) {
+    //     ModelAndView mvc = new ModelAndView();
         
-        String page = formData.getFirst("page");
-        Integer pageInt = 0;
-        if (null == page) {
-            pageInt = 1;
-        } else {
-            pageInt = Integer.parseInt(formData.getFirst("page"));
+    //     String page = formData.getFirst("page");
+    //     Integer pageInt = 0;
+    //     if (null == page) {
+    //         pageInt = 1;
+    //     } else {
+    //         pageInt = Integer.parseInt(formData.getFirst("page"));
 
-        }
-        Integer offset = 0 + 10 * (pageInt - 1);
+    //     }
+    //     Integer offset = 0 + 10 * (pageInt - 1);
         
-        String searchTerm = "";
-        if (!formData.getFirst("searchValue").isBlank()) {
-            searchTerm = formData.getFirst("searchValue");
-        } else if (formData.getFirst("searchValue").isBlank() && 
-            !formData.getFirst("currSearchValue").isBlank()) 
-        {
-            searchTerm = formData.getFirst("currSearchValue");
-        }
+    //     String searchTerm = "";
+    //     if (!formData.getFirst("searchValue").isBlank()) {
+    //         searchTerm = formData.getFirst("searchValue");
+    //     } else if (formData.getFirst("searchValue").isBlank() && 
+    //         !formData.getFirst("currSearchValue").isBlank()) 
+    //     {
+    //         searchTerm = formData.getFirst("currSearchValue");
+    //     }
 
-        String searchBy = formData.getFirst("searchBy");
-        logger.info("search term is" + searchTerm);
-        String searchTermForSQL = "%" + searchTerm + "%";
+    //     String searchBy = formData.getFirst("searchBy");
+    //     logger.info("search term is" + searchTerm);
+    //     String searchTermForSQL = "%" + searchTerm + "%";
             
-        List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset, searchBy);
-        Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL, searchBy);
-        int totalPage = (int)Math.ceil(noOfResults/10.0);
+    //     List<AddressResult> addResultsList = appSvc.getAddressesFromSearchValue(searchTermForSQL, 10, offset, searchBy);
+    //     Integer noOfResults = appSvc.getNumberOfResults(searchTermForSQL, searchBy);
+    //     int totalPage = (int)Math.ceil(noOfResults/10.0);
 
-        mvc.addObject("above20searches", "");
-        mvc.addObject("userEmail", "");
-        mvc.addObject("resultList", addResultsList);
-        mvc.addObject("searchValue", searchTerm);
-        mvc.addObject("searchBy", searchBy);
-        mvc.addObject("noOfResults", noOfResults);
-        mvc.addObject("page", pageInt);
-        mvc.addObject("totalPage", totalPage);
-        mvc.setViewName("index");
+    //     mvc.addObject("above20searches", "");
+    //     mvc.addObject("userEmail", "");
+    //     mvc.addObject("resultList", addResultsList);
+    //     mvc.addObject("searchValue", searchTerm);
+    //     mvc.addObject("searchBy", searchBy);
+    //     mvc.addObject("noOfResults", noOfResults);
+    //     mvc.addObject("page", pageInt);
+    //     mvc.addObject("totalPage", totalPage);
+    //     mvc.setViewName("index");
 
-        return mvc;
-    }
+    //     return mvc;
+    // }
 
     @PostMapping(path="/user/downloadsearchresults")
     public ModelAndView postDownloadSearchResults(HttpSession httpSesh,

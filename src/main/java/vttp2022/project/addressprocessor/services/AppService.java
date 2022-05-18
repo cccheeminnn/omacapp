@@ -10,6 +10,8 @@ import java.util.concurrent.Future;
 
 import javax.mail.MessagingException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,8 @@ import vttp2022.project.addressprocessor.repositories.FilesRepository;
 //contains all the business logic
 @Service
 public class AppService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AppService.class);
 
     @Autowired private AddressRepository omacRepo;
 
@@ -206,6 +210,7 @@ public class AppService {
     public List<AddressResult> getAddressesFromSearchValue (
         String searchTerm, Integer limit, Integer offset, String searchBy) 
     {
+        logger.info("getAddressesFromSearchValue searchTerm is: " + searchTerm);
         List<AddressResult> addResultsList = new LinkedList<>();
         addResultsList = omacRepo.getFullAddresses(searchTerm, limit, offset, searchBy);
 
