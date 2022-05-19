@@ -18,64 +18,66 @@
         <link rel="stylesheet" href="/css/style.css">
     </head>
     <body>
-        <table class="centerTable">
-            <thead>
-                <tr><td class="centerText"><h1>Welcome to OMAC</h1></td></tr>
-                <tr><td class="centerText">the <img class="headerImg" src="/images/OneMapLogo.png" alt="One Map Singapore Logo"> Caller</td></tr>
-                <tr><td colspan="2"><i class="fa-solid fa-road centerText" style="width: 100%;"></i></td></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="centerText"><i class="fa-solid fa-angles-left"></i> <a href="/">Home</a></td>
-                </tr>
-                <tr>
-                    <td class="centerText"><a href="/help">FAQ</a> <i class="fa-solid fa-question"></i></td>
-                </tr>
-                <tr><th class="centerText fontSizeXLarge spaceAbove">FAQ <i class="fa-solid fa-circle-question"></i></th></tr>
-                <tr><td class="centerTextUnderline">Q: What is the use case here?</td></tr>
-                <tr><td class="centerText">A: For users who do not have complete addresses to do their mailers. 
-                    Or anyone who needs to complete a list of incomplete addresses, eg lacking in postal code.
-                </td></tr>
-                <tr><td ><hr class="dotted"></td></tr>
-                <tr><td class="centerTextUnderline">Q: How do I use this app?</td></tr>
-                <tr><td class="centerText">A: User should upload a .csv file populated with street names.</td></tr>
-                <tr><td class="centerText">
-                    example
-                    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2010.csv}">10</a>,
-                    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2015.csv}">15</a>, or
-                    <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2020.csv}">20</a> Singapore street names.
-                </td></tr>
-                <tr><td class="centerText">
-                    Two things to make sure that they are inside the uploaded file is 
-                </td></tr>
-                <tr><td class="centerText">
-                    the column header <img src="/images/ExcelColHeader.png" alt="Excel header example screenshot"> should have "address" and the column fields should consist ONLY of the street name. 
-                </td></tr>
-                <tr><td class="centerText"><img src="/images/ExcelExample.png" alt="Excel dataset example screenshot"></td></tr>
-                <tr><td class="centerText">
-                    It does not matter if the "address" column is somewhere else not in the first column. 
-                </td></tr>
-                <tr><td ><hr class="dotted"></td></tr>
-                <tr><td class="centerTextUnderline">Q: What do you mean by .csv format file?</td></tr>
-                <tr><td class="centerText">
-                    A: Excel has multiple types of .csv file,
-                </td></tr>
-                <tr>
-                    <td class="centerText"><img src="/images/CSV.png" alt="Excel CSV (Comma delimited) Format" ></td>
-                </tr>
-                <tr>
-                    <td class="centerText"><div style="font-size: 75%;"><b><i>CSV (Comma delimited)</i></b> format</div></td>
-                </tr>
-                <tr><td class="centerText">
-                    this app is only compatible with the <b>CSV</b> format highlighted above.
-                </td></tr>
-                <tr><td ><hr class="dotted"></td></tr>
-                <tr><td class="centerTextUnderline">Q: Request timeout?</td></tr>
-                <tr><td class="centerText">A: As Heroku has a request timeout duration of 30s, for 20 and above searches 
-                    we recommend having the file sent straight to your email instead.
-                </td></tr>
-                <tr><td ><hr class="dotted"></td></tr>
-            </tbody>
-        </table>
+        <p>
+            <table class="centerTable">
+                <thead>
+                    <tr><td class="centerText"><h1>Welcome to OMAC</h1></td></tr>
+                    <tr><td class="centerText">the <img class="headerImg" src="/images/OneMapLogo.png" alt="One Map Singapore Logo"> Caller</td></tr>
+                    <tr><td><i class="fa-solid fa-road centerText" style="width: 100%;"></i></td></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="centerText"><i class="fa-solid fa-angles-left"></i> <a href="/">Home</a></td>
+                    </tr>
+                    <tr>
+                        <td class="centerText"><a href="/help">FAQ</a> <i class="fa-solid fa-question"></i></td>
+                    </tr>
+                    <tr><th class="centerText fontSizeXLarge spaceAbove">FAQ <i class="fa-solid fa-circle-question"></i></th></tr>
+                    <tr><td class="centerTextUnderline">Q: What is the use case here?</td></tr>
+                    <tr><td class="centerText">A: For users who do not have complete addresses to do their mailers. 
+                        Or anyone who needs to complete a list of incomplete addresses, eg lacking in postal code.
+                    </td></tr>
+                    <tr><td ><hr class="dotted"></td></tr>
+                    <tr><td class="centerTextUnderline">Q: How do I use this app?</td></tr>
+                    <tr><td class="centerText">A: User should upload a .csv file populated with street names.</td></tr>
+                    <tr><td class="centerText">
+                        example
+                        <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2010.csv}">10</a>,
+                        <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2015.csv}">15</a>, or
+                        <a th:href="@{https://bigcontainer.sgp1.digitaloceanspaces.com/OMAC/Sample/SG%20Streets%20Name%20-%2020.csv}">20</a> Singapore street names.
+                    </td></tr>
+                    <tr><td class="centerText">
+                        Two things to make sure that they are inside the uploaded file is 
+                    </td></tr>
+                    <tr><td class="centerText">
+                        the column header <img src="/images/ExcelColHeader.png" alt="Excel header example screenshot"> should have "address" and the column fields should consist ONLY of the street name. 
+                    </td></tr>
+                    <tr><td class="centerText"><img src="/images/ExcelExample.png" alt="Excel dataset example screenshot"></td></tr>
+                    <tr><td class="centerText">
+                        It does not matter if the "address" column is somewhere else not in the first column. 
+                    </td></tr>
+                    <tr><td ><hr class="dotted"></td></tr>
+                    <tr><td class="centerTextUnderline">Q: What do you mean by .csv format file?</td></tr>
+                    <tr><td class="centerText">
+                        A: Excel has multiple types of .csv file,
+                    </td></tr>
+                    <tr>
+                        <td class="centerText"><img src="/images/CSV.png" alt="Excel CSV (Comma delimited) Format" ></td>
+                    </tr>
+                    <tr>
+                        <td class="centerText"><div style="font-size: 75%;"><b><i>CSV (Comma delimited)</i></b> format</div></td>
+                    </tr>
+                    <tr><td class="centerText">
+                        this app is only compatible with the <b>CSV</b> format highlighted above.
+                    </td></tr>
+                    <tr><td ><hr class="dotted"></td></tr>
+                    <tr><td class="centerTextUnderline">Q: Request timeout?</td></tr>
+                    <tr><td class="centerText">A: As Heroku has a request timeout duration of 30s, for 20 and above searches 
+                        we recommend having the file sent straight to your email instead.
+                    </td></tr>
+                    <tr><td ><hr class="dotted"></td></tr>
+                </tbody>
+            </table>
+        </p>
     </body>
 </html>
