@@ -23,7 +23,6 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -189,7 +188,7 @@ public class AppControllerTests {
             //this check that the file is deleted from our table
             assertFalse(rs.next());
         } catch (Exception e) {
-            fail("failed to shouldDeleteFileCreated", e);
+            fail("failed test shouldDeleteFileCreated", e);
             return;
         }
     }
@@ -262,6 +261,32 @@ public class AppControllerTests {
             fail("failed test shouldNotRegisterTheSameAccount", e);
             return;
         } 
+    }
+
+    @Test
+    @Order(9)
+    void shouldReturnOkAndIndex() {
+        try {
+            RequestBuilder reqBuilder = MockMvcRequestBuilders
+                .get("/user/quicksearch")
+                .queryParam("searchValue", "loyang way 2") //12 results
+                .queryParam("searchBy", "address")
+                .queryParam("page", "1")
+                .sessionAttr("username", "omacapp@outlook.com");
+    
+            MvcResult result = mvc
+                .perform(reqBuilder)
+                .andReturn();
+            
+            String noOfResults = result.getModelAndView().getModel().get("noOfResults").toString();
+            String viewname = result.getModelAndView().getViewName();
+            assertTrue(noOfResults.equals("12"));
+            assertTrue(viewname.equals("index"));
+
+        } catch (Exception e) {
+            fail("failed test shouldReturnOkAndIndex", e);
+            return;
+        }
     }
 
     @AfterAll
