@@ -7,6 +7,11 @@
     text-align: center;
 }
 
+.centerImg {
+    display: block;
+    margin: 0 auto;
+}
+
 .underlineText {
     text-decoration: underline;
 }

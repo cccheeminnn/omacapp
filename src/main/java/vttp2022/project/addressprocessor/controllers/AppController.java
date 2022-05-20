@@ -96,8 +96,17 @@ public class AppController {
     }
 
     @GetMapping(path="/help")
-    public ModelAndView getHelp() {
-        return new ModelAndView("help");
+    public ModelAndView getHelp(HttpSession httpSesh) {
+        ModelAndView mvc = new ModelAndView("help");
+        
+        String username = (String)httpSesh.getAttribute("username");
+        if (null != username) {
+            mvc.addObject("login", "yes");
+        } else {
+            mvc.addObject("login", "");
+        }
+
+        return mvc;
     }
 
     @GetMapping(path="/user/quicksearch")

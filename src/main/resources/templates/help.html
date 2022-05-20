@@ -28,15 +28,28 @@
             </table>
         </p>
         <p>
+            <form>
+                <table class="centerTable">
+                    <tbody>
+                        <tr>
+                            <td class="centerText"><i class="fa-solid fa-angles-left"></i> <a href="/">Home</a></td>
+                        </tr>
+                        <tr>
+                            <td class="centerText"><a href="/help">FAQ</a> <i class="fa-solid fa-question"></i></td>
+                        </tr>
+                        <tr th:if="${login} == 'yes'">
+                            <td class="centerText"><i class="fa-solid fa-user"></i> <a href="/user/profile">Profile</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </p>
+        <form>
             <table class="centerTable">
+                <thead>
+                    <tr><th class="centerText fontSizeXLarge">FAQ <i class="fa-solid fa-circle-question"></i></th></tr>
+                </thead>
                 <tbody>
-                    <tr>
-                        <td class="centerText"><i class="fa-solid fa-angles-left"></i> <a href="/">Home</a></td>
-                    </tr>
-                    <tr>
-                        <td class="centerText"><a href="/help">FAQ</a> <i class="fa-solid fa-question"></i></td>
-                    </tr>
-                    <tr><th class="centerText fontSizeXLarge spaceAbove">FAQ <i class="fa-solid fa-circle-question"></i></th></tr>
                     <tr><td class="centerTextUnderline">Q: What is the use case here?</td></tr>
                     <tr><td class="centerText">A: For users who do not have complete addresses to do their mailers. 
                         Or anyone who needs to complete a list of incomplete addresses, eg lacking in postal code.
@@ -56,7 +69,9 @@
                     <tr><td class="centerText">
                         the column header <img src="/images/ExcelColHeader.png" alt="Excel header example screenshot"> should have "address" and the column fields should consist ONLY of the street name. 
                     </td></tr>
-                    <tr><td class="centerText"><img src="/images/ExcelExample.png" alt="Excel dataset example screenshot"></td></tr>
+                    <tr><td>
+                        <img class="centerImg centerText" src="/images/ExcelExample.png" alt="Excel dataset example screenshot">
+                    </td></tr>
                     <tr><td class="centerText">
                         It does not matter if the "address" column is somewhere else not in the first column. 
                     </td></tr>
@@ -65,12 +80,12 @@
                     <tr><td class="centerText">
                         A: Excel has multiple types of .csv file,
                     </td></tr>
-                    <tr>
-                        <td class="centerText"><img src="/images/CSV.png" alt="Excel CSV (Comma delimited) Format" ></td>
-                    </tr>
-                    <tr>
-                        <td class="centerText"><div style="font-size: 75%;"><b><i>CSV (Comma delimited)</i></b> format</div></td>
-                    </tr>
+                    <tr><td>
+                        <img class="centerImg centerText" src="/images/CSV.png" alt="Excel CSV (Comma delimited) Format">
+                    </td></tr>
+                    <tr><td class="centerText">
+                        <div style="font-size: 75%;"><b><i>CSV (Comma delimited)</i></b> format</div>
+                    </td></tr>
                     <tr><td class="centerText">
                         this app is only compatible with the <b>CSV</b> format highlighted above.
                     </td></tr>
@@ -82,6 +97,6 @@
                     <tr><td ><hr class="dotted"></td></tr>
                 </tbody>
             </table>
-        </p>
+        </form>
     </body>
 </html>
